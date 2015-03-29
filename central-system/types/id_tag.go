@@ -1,4 +1,4 @@
-package idtag
+package types
 
 type IdTag struct {
 	idTag IdToken

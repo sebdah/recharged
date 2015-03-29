@@ -1,4 +1,4 @@
-package idtag
+package types
 
 type IdToken struct {
 	// Mandatory

@@ -1,4 +1,4 @@
-package idtag
+package types
 
 type IdTagInfo struct {
 	// Optional. Unix datetime object
