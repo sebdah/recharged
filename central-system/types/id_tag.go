@@ -24,7 +24,7 @@ func NewIdTag(idTag IdToken) *IdTag {
 }
 
 // Add to whitelist
-func (idtag *IdTag) AddToWhiteList() (bool, error) {
+func (idtag *IdTag) AddToWhiteList() (*dynamodb.PutItemOutput, error) {
 	var item map[string]*dynamodb.AttributeValue
 	item["idtag"] = &dynamodb.AttributeValue{S: idtag.idTag.ToString()}
 
@@ -33,17 +33,17 @@ func (idtag *IdTag) AddToWhiteList() (bool, error) {
 		TableName: &TableName,
 	}
 
-	_, err := Db.PutItem(&putItemInput)
+	output, err := Db.PutItem(&putItemInput)
 	if err != nil {
 		log.Fatal(err)
-		return false, err
+		return output, err
 	}
 
-	return true, err
+	return output, err
 }
 
 // Remove from whitelist
-func (idtag *IdTag) RemoveFromWhitelist() (bool, error) {
+func (idtag *IdTag) RemoveFromWhitelist() (*dynamodb.DeleteItemOutput, error) {
 	var item map[string]*dynamodb.AttributeValue
 	item["idtag"] = &dynamodb.AttributeValue{S: idtag.idTag.ToString()}
 
@@ -52,11 +52,11 @@ func (idtag *IdTag) RemoveFromWhitelist() (bool, error) {
 		TableName: &TableName,
 	}
 
-	_, err := Db.DeleteItem(&deleteItemInput)
+	output, err := Db.DeleteItem(&deleteItemInput)
 	if err != nil {
 		log.Fatal(err)
-		return false, err
+		return output, err
 	}
 
-	return true, err
+	return output, err
 }
