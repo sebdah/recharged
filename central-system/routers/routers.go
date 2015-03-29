@@ -8,8 +8,10 @@ import (
 func Router() *mux.Router {
 	router := mux.NewRouter()
 
-	idtag := router.Path("/idtag/{id}").Subrouter()
-	idtag.Path("/authorize").Methods("POST").HandlerFunc(handlers.AuthorizeHandler)
+	router.
+		Path("/idtag/{id}/authorize").
+		Methods("GET").
+		HandlerFunc(handlers.AuthorizeHandler)
 
 	return router
 }
