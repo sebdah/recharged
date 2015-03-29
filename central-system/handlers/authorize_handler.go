@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/awslabs/aws-sdk-go/gen/dynamodb"
+	"github.com/awslabs/aws-sdk-go/service/dynamodb"
 	"github.com/sebdah/recharged/central-system/database"
 )
 
