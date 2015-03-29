@@ -10,3 +10,7 @@ func NewIdToken(idToken string) *IdToken {
 	token.idToken = idToken
 	return token
 }
+
+func (idToken *IdToken) ToString() *string {
+	return &idToken.idToken
+}
