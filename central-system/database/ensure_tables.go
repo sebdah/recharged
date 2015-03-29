@@ -29,7 +29,17 @@ func EnsureTables(drop bool) {
 
 	// Create the tables
 	for i := range tables {
-		CreateTable(tables[i])
+		found := false
+		for j := range listTablesOutput.TableNames {
+			if &tables[i].TableName == listTablesOutput.TableNames[j] {
+				found = true
+			}
+		}
+
+		// Create the table if it does not exist
+		if found != true {
+			CreateTable(tables[i])
+		}
 	}
 }
 
