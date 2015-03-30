@@ -19,38 +19,37 @@ type Table struct {
 
 // Create table
 func (table *Table) CreateTable() (output *dynamodb.CreateTableOutput, err error) {
-	fmt.Printf("Creating table '%s'.. ", table.TableName)
+	fmt.Printf("Creating table '%s'\n", table.TableName)
 	input := table.GetCreateTableInput()
-	output, err = Db.CreateTable(input)
+	output, err = GetDb().CreateTable(input)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("OK")
 	return
 }
 
 // Delete table
 func (table *Table) DeleteTable() (output *dynamodb.DeleteTableOutput, err error) {
-	fmt.Printf("Deleting table '%s'.. ", table.TableName)
+	fmt.Printf("Deleting table '%s'\n", table.TableName)
 	input := table.GetDeleteTableInput()
-	output, err = Db.DeleteTable(input)
+	output, err = GetDb().DeleteTable(input)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("OK")
 	return
 }
 
 // Ensure table
 func (table *Table) EnsureTable() {
-	tables, err := Db.ListTables(&dynamodb.ListTablesInput{})
+	input := dynamodb.ListTablesInput{}
+	tables, err := GetDb().ListTables(&input)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Skip table creation if the table already exists
 	for i := range tables.TableNames {
-		if tables.TableNames[i] == &table.TableName {
+		if *tables.TableNames[i] == table.TableName {
 			return
 		}
 	}
@@ -123,7 +122,7 @@ func (table *Table) GetDeleteTableInput() (input *dynamodb.DeleteTableInput) {
 
 // Recreate the table (or just create it if it doesn't exist)
 func (table *Table) RecreateTable() {
-	tables, err := Db.ListTables(&dynamodb.ListTablesInput{})
+	tables, err := GetDb().ListTables(&dynamodb.ListTablesInput{})
 	if err != nil {
 		log.Fatal(err)
 	}
