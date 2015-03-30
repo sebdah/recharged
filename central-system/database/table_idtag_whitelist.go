@@ -1,6 +1,6 @@
 package database
 
-func TableInputIdTagWhitelist() *Table {
+func TableIdTagWhitelist() *Table {
 	table := new(Table)
 	table.TableName = "idtag_whitelist"
 	table.ReadCapacityUnits = 1
