@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/awslabs/aws-sdk-go/service/dynamodb"
@@ -18,21 +19,25 @@ type Table struct {
 
 // Create table
 func (table *Table) CreateTable() (output *dynamodb.CreateTableOutput, err error) {
+	fmt.Printf("Creating table '%s'.. ", table.TableName)
 	input := table.GetCreateTableInput()
 	output, err = Db.CreateTable(input)
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("OK")
 	return
 }
 
 // Delete table
 func (table *Table) DeleteTable() (output *dynamodb.DeleteTableOutput, err error) {
+	fmt.Printf("Deleting table '%s'.. ", table.TableName)
 	input := table.GetDeleteTableInput()
 	output, err = Db.DeleteTable(input)
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("OK")
 	return
 }
 
