@@ -1,6 +1,6 @@
 package types
 
 const (
-	ResetTypeHard int = 0
-	ResetTypeSoft int = 1
+	ResetTypeImmediate string = "Immediate"
+	ResetTypeOnIdle    string = "OnIdle"
 )

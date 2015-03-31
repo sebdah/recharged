@@ -1,9 +1,9 @@
 package types
 
 const (
-	AuthorizationStatusAccepted     int = 0
-	AuthorizationStatusBlocket      int = 1
-	AuthorizationStatusExpired      int = 2
-	AuthorizationStatusInvalid      int = 3
-	AuthorizationStatusConcurrentTx int = 4
+	AuthorizationStatusAccepted     string = "Accepted"
+	AuthorizationStatusBlocked      string = "Blocked"
+	AuthorizationStatusExpired      string = "Expired"
+	AuthorizationStatusInvalid      string = "Invalid"
+	AuthorizationStatusConcurrentTx string = "ConcurrentTx"
 )

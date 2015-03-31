@@ -1,8 +1,8 @@
 package types
 
 const (
-	DataTransferStatusAccepted         int = 0
-	DataTransferStatusRejected         int = 1
-	DataTransferStatusUnknownMessageId int = 2
-	DataTransferStatusUnknowenVendorId int = 3
+	DataTransferStatusAccepted                 string = "Accepted"
+	DataTransferStatusRejected                 string = "Rejected"
+	DataTransferStatusUnknownMessageId         string = "UnknownMessageId"
+	VendorIdDataTransferStatusUnknowenVendorId string = "UnknownVendorId"
 )

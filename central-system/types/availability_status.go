@@ -1,7 +1,7 @@
 package types
 
 const (
-	AvailabilityStatusAccepted  int = 0
-	AvailabilityStatusRejected  int = 1
-	AvailabilityStatusScheduled int = 2
+	AvailabilityStatusAccepted  string = "Accepted"
+	AvailabilityStatusRejected  string = "Rejected"
+	AvailabilityStatusScheduled string = "Scheduled"
 )

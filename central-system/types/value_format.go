@@ -1,6 +1,6 @@
 package types
 
 const (
-	ValueFormatRaw        int = 0
-	ValueFormatSignedData int = 1
+	ValueFormatRaw        string = "Raw"
+	ValueFormatSignedData string = "SignedData"
 )
