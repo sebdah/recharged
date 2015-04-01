@@ -3,18 +3,14 @@ package settings
 import "os"
 
 type Settings struct {
-	AwsRegion           string
-	AwsAccessKey        string
-	AwsSecretKey        string
-	AwsDynamoDBEndpoint string
+	MongoDBHosts string
+	DatabaseName string
 }
 
 func GetSettings() Settings {
 	devSettings := Settings{
-		AwsRegion:           "local",
-		AwsAccessKey:        "foo",
-		AwsSecretKey:        "bar",
-		AwsDynamoDBEndpoint: "http://localhost:8000",
+		MongoDBHosts: "localhost:27017",
+		DatabaseName: "rechargedDev",
 	}
 
 	environment := os.Getenv("ENV")

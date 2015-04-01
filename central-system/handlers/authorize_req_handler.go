@@ -5,13 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/awslabs/aws-sdk-go/service/dynamodb"
-	"github.com/sebdah/recharged/central-system/database"
 	"github.com/sebdah/recharged/central-system/messages"
 	"github.com/sebdah/recharged/central-system/types"
 )
-
-var Db *dynamodb.DynamoDB = database.GetDb()
 
 func AuthorizeReqHandler(rw http.ResponseWriter, req *http.Request) {
 	authorizeReq := new(messages.AuthorizeReq)
