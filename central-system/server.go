@@ -26,8 +26,8 @@ func main() {
 	// Create databases if needed
 	if env == "dev" {
 		fmt.Println("Ensuring databases")
-		tableIdTagWhitelist := database.TableIdTagWhitelist()
-		tableIdTagWhitelist.EnsureTable()
+		tableIdTags := database.TableIdTags()
+		tableIdTags.EnsureTable()
 	}
 
 	fmt.Printf("Starting webserver on port %s\n", port)

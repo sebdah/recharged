@@ -120,6 +120,15 @@ func (table *Table) GetDeleteTableInput() (input *dynamodb.DeleteTableInput) {
 	return
 }
 
+// Put a new Item to the database
+func (table *Table) PutItem(input *dynamodb.PutItemInput) (output *dynamodb.PutItemOutput, err error) {
+	output, err = Db.PutItem(input)
+	if err != nil {
+		log.Println("Error putting item to database")
+	}
+	return
+}
+
 // Recreate the table (or just create it if it doesn't exist)
 func (table *Table) RecreateTable() {
 	tables, err := GetDb().ListTables(&dynamodb.ListTablesInput{})

@@ -1,11 +1,11 @@
 package database
 
-func TableIdTagWhitelist() *Table {
+func TableIdTags() *Table {
 	table := new(Table)
-	table.TableName = "idtag_whitelist"
+	table.TableName = "id_tags"
 	table.ReadCapacityUnits = 1
 	table.WriteCapacityUnits = 1
-	table.HashKeyName = "idtag"
+	table.HashKeyName = "id"
 	table.HashKeyType = "S"
 
 	return table
