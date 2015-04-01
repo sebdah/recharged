@@ -8,7 +8,6 @@ import (
 	"github.com/awslabs/aws-sdk-go/service/dynamodb"
 	"github.com/sebdah/recharged/central-system/database"
 	"github.com/sebdah/recharged/central-system/messages"
-	"github.com/sebdah/recharged/central-system/models"
 	"github.com/sebdah/recharged/central-system/types"
 )
 
@@ -25,7 +24,7 @@ func AuthorizeReqHandler(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	idTagInfo := new(models.IdTagInfo)
+	idTagInfo := new(types.IdTagInfo)
 	idTagInfo.Status = types.AuthorizationStatusAccepted
 
 	authorizeConf := new(messages.AuthorizeConf)

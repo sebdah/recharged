@@ -1,12 +1,12 @@
 package messages
 
-import "github.com/sebdah/recharged/central-system/models"
+import "github.com/sebdah/recharged/central-system/types"
 
 type AuthorizeReq struct {
-	IdTag models.IdToken `json:"idTag"`
+	IdTag types.IdToken `json:"idTag"`
 }
 
 type AuthorizeConf struct {
-	IdTagInfo *models.IdTagInfo `json:"idTagInfo"`
+	IdTagInfo *types.IdTagInfo `json:"idTagInfo"`
 	// PriceScheme, Not yet implemented
 }

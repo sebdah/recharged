@@ -1,4 +1,4 @@
-package models
+package types
 
 type LocalizedText struct {
 	language string `type:"LanguageCodeType" required="false"`

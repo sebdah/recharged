@@ -1,4 +1,4 @@
-package models
+package types
 
 type ChargePoint struct {
 	model        string `max_length:20`

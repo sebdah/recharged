@@ -1,4 +1,4 @@
-package models
+package types
 
 type MeterValue struct {
 	timestamp string `type="string" required="true"`

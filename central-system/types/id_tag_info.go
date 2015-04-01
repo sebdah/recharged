@@ -1,4 +1,4 @@
-package models
+package types
 
 type IdTagInfo struct {
 	ExpiryDate string   `type:"string" required="false"`

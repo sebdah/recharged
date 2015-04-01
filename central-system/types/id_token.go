@@ -1,4 +1,4 @@
-package models
+package types
 
 type IdToken struct {
 	Id     string `json:"id" type:"string" required:"true" max_length:"50"`

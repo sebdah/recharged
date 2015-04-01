@@ -1,4 +1,4 @@
-package models
+package types
 
 type TransactionId struct {
 	transactionId       int    `type="int"`
