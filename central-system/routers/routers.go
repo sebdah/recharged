@@ -9,9 +9,9 @@ func Router() *mux.Router {
 	router := mux.NewRouter()
 
 	router.
-		Path("/idtag/{id}/authorize").
-		Methods("GET").
-		HandlerFunc(handlers.AuthorizeHandler)
+		Path("/ocpp/v2.0-j/authorize").
+		Methods("POST").
+		HandlerFunc(handlers.AuthorizeReqHandler)
 
 	return router
 }

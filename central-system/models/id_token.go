@@ -1,6 +1,6 @@
 package models
 
 type IdToken struct {
-	id     string `type:"string" required="true" max_length="50"`
-	idType string `type:"idType" required="false"`
+	Id     string `json:"id" type:"string" required:"true" max_length:"50"`
+	IdType string `json:"idType" type:"idType" required:"false"`
 }
