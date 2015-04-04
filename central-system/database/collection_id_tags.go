@@ -5,6 +5,7 @@ import "gopkg.in/mgo.v2"
 var collectionName string = "idTags"
 
 func CreateCollectionIdTags() {
+	// Create the database
 	database := GetDb()
 	collection := mgo.Collection{
 		Database: database,
