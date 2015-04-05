@@ -1,15 +1,11 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/sebdah/recharged/central-system/database"
 	"github.com/sebdah/recharged/central-system/types"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
-
-var collection *mgo.Collection
 
 type IdTag struct {
 	Id         bson.ObjectId `bson:"_id,omitempty"`
@@ -29,20 +25,20 @@ func NewIdTag(id string) (idTag *IdTag) {
 	idTag.Language = "en"
 	idTag.Active = false
 
-	collection = database.GetCollectionIdTags()
-
 	return
 }
 
-// Save the document
-func (idTag *IdTag) Save() *IdTag {
-	fmt.Printf("Id: %s\n", idTag.Id)
-	if idTag.Id == "" {
-		idTag.Id = bson.NewObjectId()
-		collection.Insert(&idTag)
-	} else {
-		collection.Update(bson.M{"_id": idTag.Id}, &idTag)
-	}
+// Get the collection, satisfies the Modeller interface
+func (this *IdTag) Collection() *mgo.Collection {
+	return database.GetCollectionIdTags()
+}
 
-	return idTag
+// Get the ID
+func (this *IdTag) GetId() bson.ObjectId {
+	return this.Id
+}
+
+// Set the ID
+func (this *IdTag) SetId(id *bson.ObjectId) {
+	this.Id = *id
 }
