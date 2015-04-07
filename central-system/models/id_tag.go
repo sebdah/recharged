@@ -10,13 +10,13 @@ import (
 )
 
 type IdTag struct {
-	Id         bson.ObjectId `bson:"_id,omitempty"`
-	IdTag      string        `type:"string" required:"true"`
-	IdType     string        `type:"string" required:"true" default:"ISO14443"`
-	ExpiryDate time.Time     `type:"Time" required:"false"`
-	GroupIdTag string        `type:"string" required:"false"`
-	Language   string        `type:"string" required:"false" default:"en"`
-	Active     bool          `type:"bool" required:"true" default:"false"`
+	Id         bson.ObjectId `json:"-" bson:"_id,omitempty"`
+	IdTag      string        `json:"idTag" type:"string" required:"true"`
+	IdType     string        `json:"idType" type:"string" required:"true" default:"ISO14443"`
+	ExpiryDate time.Time     `json:"expiryDate" type:"Time" required:"false"`
+	GroupIdTag string        `json:"groupIdTag" type:"string" required:"false"`
+	Language   string        `json:"language" type:"string" required:"false" default:"en"`
+	Active     bool          `json:"-" type:"bool" required:"true" default:"false"`
 }
 
 // Constructor
