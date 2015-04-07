@@ -49,3 +49,9 @@ func Save(model Modeller) (err error) {
 
 	return
 }
+
+// Update the model
+func Update(model Modeller) (err error) {
+	err = model.Collection().Update(bson.M{"_id": model.GetId()}, model)
+	return
+}
