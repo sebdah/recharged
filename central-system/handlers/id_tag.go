@@ -18,7 +18,7 @@ func IdTagCreateHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&idTag)
 	if err != nil {
-		log.Printf("Unable to parse ruest")
+		log.Printf("Unable to parse request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -90,6 +90,49 @@ func IdTagListHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(data)
+
+	return
+}
+
+func IdTagUpdateHandler(w http.ResponseWriter, r *http.Request) {
+	var idTag = new(models.IdTag)
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+	collection := database.GetCollectionIdTags()
+
+	err := collection.Find(bson.M{"idtag": id}).One(&idTag)
+	if err != nil {
+		if strings.Contains(err.Error(), "not found") == true {
+			http.NotFound(w, r)
+			return
+		} else {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Printf("Error querying MongoDB: %s", err)
+			return
+		}
+	}
+
+	decoder := json.NewDecoder(r.Body)
+	err = decoder.Decode(&idTag)
+	if err != nil {
+		log.Printf("Unable to parse request")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = models.Update(idTag)
+	if err != nil {
+		if mgo.IsDup(err) {
+			w.WriteHeader(http.StatusConflict)
+			return
+		} else {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	}
+
+	w.WriteHeader(http.StatusCreated)
 
 	return
 }

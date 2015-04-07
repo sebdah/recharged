@@ -21,6 +21,10 @@ func Router() *mux.Router {
 		Path("/admin/idTags/{id}").
 		Methods("GET").
 		HandlerFunc(handlers.IdTagGetHandler)
+	router.
+		Path("/admin/idTags/{id}").
+		Methods("PUT").
+		HandlerFunc(handlers.IdTagUpdateHandler)
 
 	// OCPP2.0-J
 	router.
