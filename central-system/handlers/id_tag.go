@@ -13,6 +13,29 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// Get an IdTag from the Database
+func getIdTag(w http.ResponseWriter, r *http.Request) (idTag models.IdTag) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	collection := database.GetCollectionIdTags()
+
+	err := collection.Find(bson.M{"idtag": id}).One(&idTag)
+	if err != nil {
+		if strings.Contains(err.Error(), "not found") == true {
+			http.NotFound(w, r)
+			log.Println("fitta")
+			return
+		} else {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Printf("Error querying MongoDB: %s", err)
+			return
+		}
+	}
+
+	return
+}
+
+// Create new IdTag
 func IdTagCreateHandler(w http.ResponseWriter, r *http.Request) {
 	idTag := models.NewIdTag()
 	decoder := json.NewDecoder(r.Body)
@@ -39,24 +62,23 @@ func IdTagCreateHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func IdTagGetHandler(w http.ResponseWriter, r *http.Request) {
-	var idTag = new(models.IdTag)
-
-	vars := mux.Vars(r)
-	id := vars["id"]
-	collection := database.GetCollectionIdTags()
-
-	err := collection.Find(bson.M{"idtag": id}).One(&idTag)
+// Delete IdTag
+func IdTagDeleteHandler(w http.ResponseWriter, r *http.Request) {
+	idTag := getIdTag(w, r)
+	err := models.Delete(&idTag)
 	if err != nil {
-		if strings.Contains(err.Error(), "not found") == true {
-			http.NotFound(w, r)
-			return
-		} else {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			log.Printf("Error querying MongoDB: %s", err)
-			return
-		}
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("Error deleting IdTag %s", idTag.Id)
+		return
 	}
+
+	w.WriteHeader(http.StatusOK)
+	return
+}
+
+// Get an IdTag
+func IdTagGetHandler(w http.ResponseWriter, r *http.Request) {
+	idTag := getIdTag(w, r)
 
 	data, err := json.Marshal(idTag)
 	if err != nil {
@@ -71,6 +93,7 @@ func IdTagGetHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// List all IdTags
 func IdTagListHandler(w http.ResponseWriter, r *http.Request) {
 	var idTags []models.IdTag
 	collection := database.GetCollectionIdTags()
@@ -94,34 +117,19 @@ func IdTagListHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// Update an IdTag
 func IdTagUpdateHandler(w http.ResponseWriter, r *http.Request) {
-	var idTag = new(models.IdTag)
-
-	vars := mux.Vars(r)
-	id := vars["id"]
-	collection := database.GetCollectionIdTags()
-
-	err := collection.Find(bson.M{"idtag": id}).One(&idTag)
-	if err != nil {
-		if strings.Contains(err.Error(), "not found") == true {
-			http.NotFound(w, r)
-			return
-		} else {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			log.Printf("Error querying MongoDB: %s", err)
-			return
-		}
-	}
+	idTag := getIdTag(w, r)
 
 	decoder := json.NewDecoder(r.Body)
-	err = decoder.Decode(&idTag)
+	err := decoder.Decode(&idTag)
 	if err != nil {
 		log.Printf("Unable to parse request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	err = models.Update(idTag)
+	err = models.Update(&idTag)
 	if err != nil {
 		if mgo.IsDup(err) {
 			w.WriteHeader(http.StatusConflict)

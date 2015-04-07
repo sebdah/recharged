@@ -14,6 +14,12 @@ func EnsureIndexes(model Modeller) {
 	}
 }
 
+// Delete the model
+func Delete(model Modeller) error {
+	err := model.Collection().Remove(bson.M{"_id": model.GetId()})
+	return err
+}
+
 // Save the model
 func Save(model Modeller) (err error) {
 	if model.GetId() == "" {
