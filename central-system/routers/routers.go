@@ -8,6 +8,13 @@ import (
 func Router() *mux.Router {
 	router := mux.NewRouter()
 
+	// Manager
+	router.
+		Path("/admin/idTag").
+		Methods("POST").
+		HandlerFunc(handlers.IdTagAddHandler)
+
+	// OCPP2.0-J
 	router.
 		Path("/ocpp/v2.0-j/authorize").
 		Methods("POST").

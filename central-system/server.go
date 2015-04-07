@@ -1,11 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"os"
 
 	"github.com/sebdah/recharged/central-system/database"
+	"github.com/sebdah/recharged/central-system/models"
 	"github.com/sebdah/recharged/central-system/routers"
 )
 
@@ -15,7 +16,7 @@ func main() {
 	if env == "" {
 		env = "dev"
 	}
-	fmt.Printf("Using environment '%s'\n", env)
+	log.Printf("Using environment '%s'\n", env)
 
 	// Set default port
 	port := os.Getenv("PORT")
@@ -25,10 +26,13 @@ func main() {
 
 	// Create databases if needed
 	if env == "dev" {
-		fmt.Println("Ensuring databases")
+		log.Println("Ensuring databases")
 		database.CreateCollectionIdTags()
+
+		log.Println("Ensuring indexes")
+		models.EnsureIndexes(new(models.IdTag))
 	}
 
-	fmt.Printf("Starting webserver on port %s\n", port)
+	log.Printf("Starting webserver on port %s\n", port)
 	http.ListenAndServe(":"+port, routers.Router())
 }

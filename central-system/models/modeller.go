@@ -8,5 +8,6 @@ import (
 type Modeller interface {
 	GetId() bson.ObjectId
 	Collection() *mgo.Collection
+	Indexes() []*mgo.Index
 	SetId(id *bson.ObjectId)
 }

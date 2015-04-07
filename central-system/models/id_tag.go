@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"github.com/sebdah/recharged/central-system/database"
 	"github.com/sebdah/recharged/central-system/types"
 	"gopkg.in/mgo.v2"
@@ -11,16 +13,15 @@ type IdTag struct {
 	Id         bson.ObjectId `bson:"_id,omitempty"`
 	IdTag      string        `type:"string" required:"true"`
 	IdType     string        `type:"string" required:"true" default:"ISO14443"`
-	ExpiryDate string        `type:"string" required:"false"`
+	ExpiryDate time.Time     `type:"Time" required:"false"`
 	GroupIdTag string        `type:"string" required:"false"`
 	Language   string        `type:"string" required:"false" default:"en"`
 	Active     bool          `type:"bool" required:"true" default:"false"`
 }
 
 // Constructor
-func NewIdTag(id string) (idTag *IdTag) {
+func NewIdTag() (idTag *IdTag) {
 	idTag = new(IdTag)
-	idTag.IdTag = id
 	idTag.IdType = types.IdTypeISO14443
 	idTag.Language = "en"
 	idTag.Active = false
@@ -33,12 +34,23 @@ func (this *IdTag) Collection() *mgo.Collection {
 	return database.GetCollectionIdTags()
 }
 
-// Get the ID
+// Indexes, satisfies the Modeller interface
+func (this *IdTag) Indexes() (indexes []*mgo.Index) {
+	idTagIndex := mgo.Index{
+		Key:    []string{"idtag"},
+		Unique: true,
+	}
+	indexes = append(indexes, &idTagIndex)
+
+	return
+}
+
+// Get the ID, satisfies the Modeller interface
 func (this *IdTag) GetId() bson.ObjectId {
 	return this.Id
 }
 
-// Set the ID
+// Set the ID, satisfies the Modeller interface
 func (this *IdTag) SetId(id *bson.ObjectId) {
 	this.Id = *id
 }
