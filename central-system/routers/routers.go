@@ -10,9 +10,9 @@ func Router() *mux.Router {
 
 	// Manager
 	router.
-		Path("/admin/idTag").
+		Path("/admin/idTags").
 		Methods("POST").
-		HandlerFunc(handlers.IdTagAddHandler)
+		HandlerFunc(handlers.IdTagCreateHandler)
 
 	// OCPP2.0-J
 	router.

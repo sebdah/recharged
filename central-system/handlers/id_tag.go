@@ -9,7 +9,7 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
-func IdTagAddHandler(rw http.ResponseWriter, req *http.Request) {
+func IdTagCreateHandler(rw http.ResponseWriter, req *http.Request) {
 	idTag := models.NewIdTag()
 	decoder := json.NewDecoder(req.Body)
 	err := decoder.Decode(&idTag)
