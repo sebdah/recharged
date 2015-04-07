@@ -11,6 +11,10 @@ func Router() *mux.Router {
 	// Manager
 	router.
 		Path("/admin/idTags").
+		Methods("GET").
+		HandlerFunc(handlers.IdTagListHandler)
+	router.
+		Path("/admin/idTags").
 		Methods("POST").
 		HandlerFunc(handlers.IdTagCreateHandler)
 
