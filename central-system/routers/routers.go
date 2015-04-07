@@ -9,26 +9,28 @@ func Router() *mux.Router {
 	router := mux.NewRouter()
 
 	// Manager
-	router.
-		Path("/admin/idTags").
+	adminRouter := router.Path("/admin").Subrouter()
+	adminRouter.
+		Path("/idTags").
 		Methods("GET").
 		HandlerFunc(handlers.IdTagListHandler)
-	router.
-		Path("/admin/idTags").
+	adminRouter.
+		Path("/idTags").
 		Methods("POST").
 		HandlerFunc(handlers.IdTagCreateHandler)
-	router.
-		Path("/admin/idTags/{id}").
+	adminRouter.
+		Path("/idTags/{id}").
 		Methods("GET").
 		HandlerFunc(handlers.IdTagGetHandler)
-	router.
-		Path("/admin/idTags/{id}").
+	adminRouter.
+		Path("/idTags/{id}").
 		Methods("PUT").
 		HandlerFunc(handlers.IdTagUpdateHandler)
 
 	// OCPP2.0-J
-	router.
-		Path("/ocpp/v2.0-j/authorize").
+	occp20jRouter := router.Path("/ocpp/v2.0j").Subrouter()
+	occp20jRouter.
+		Path("/authorize").
 		Methods("POST").
 		HandlerFunc(handlers.AuthorizeReqHandler)
 
