@@ -23,7 +23,6 @@ func getIdTag(w http.ResponseWriter, r *http.Request) (idTag models.IdTag) {
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") == true {
 			http.NotFound(w, r)
-			log.Println("fitta")
 			return
 		} else {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -41,7 +40,14 @@ func IdTagCreateHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&idTag)
 	if err != nil {
-		log.Printf("Unable to parse request")
+		log.Printf("Unable to parse request: %s", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Check that the idTag field is set
+	if idTag.IdTag == "" {
+		log.Printf("Missing idTag in request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
