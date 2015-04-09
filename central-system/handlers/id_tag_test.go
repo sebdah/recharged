@@ -31,28 +31,37 @@ func init() {
 	models.EnsureIndexes(idTag)
 }
 
-// Test listing of IdTags
-func TestListIdTagSimple(t *testing.T) {
-	// Create the tag
-	body := `{"idTag": "test1"}`
+// Helper - Create idTag
+func createIdTag(t *testing.T, body string) (res *http.Response) {
 	reader := strings.NewReader(body)
 	r, err := http.NewRequest("POST", baseUrl, reader)
 	assert.Nil(t, err)
-	res, err := http.DefaultClient.Do(r)
+	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
-	assert.Equal(t, 201, res.StatusCode)
+	return
+}
 
-	// Create the tag
-	body = `{"idTag": "test2"}`
-	reader = strings.NewReader(body)
-	r, err = http.NewRequest("POST", baseUrl, reader)
+// Helper - Delete idTag
+func deleteIdTag(t *testing.T, idTag string) (res *http.Response) {
+	r, err := http.NewRequest("DELETE", baseUrl+"/"+idTag, nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
+	return res
+}
+
+// Test listing of IdTags
+func TestListIdTagSimple(t *testing.T) {
+	// Create the tag
+	res := createIdTag(t, `{"idTag": "test1"}`)
+	assert.Equal(t, 201, res.StatusCode)
+
+	// Create the tag
+	res = createIdTag(t, `{"idTag": "test2"}`)
 	assert.Equal(t, 201, res.StatusCode)
 
 	// List all IdTags
-	r, err = http.NewRequest("GET", baseUrl, reader)
+	r, err := http.NewRequest("GET", baseUrl, reader)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -64,35 +73,21 @@ func TestListIdTagSimple(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Len(t, idTags, 2)
 
-	// Delete it again
-	r, err = http.NewRequest("DELETE", baseUrl+"/test1", nil)
-	assert.Nil(t, err)
-	res, err = http.DefaultClient.Do(r)
-	assert.Nil(t, err)
+	// Delete it
+	res = deleteIdTag(t, "test1")
 	assert.Equal(t, 200, res.StatusCode)
-	r, err = http.NewRequest("DELETE", baseUrl+"/test2", nil)
-	assert.Nil(t, err)
-	res, err = http.DefaultClient.Do(r)
-	assert.Nil(t, err)
+	res = deleteIdTag(t, "test2")
 	assert.Equal(t, 200, res.StatusCode)
 }
 
 // Test creation of IdTag
 func TestCreateIdTagSimple(t *testing.T) {
 	// Create the tag
-	body := `{"idTag": "test"}`
-	reader := strings.NewReader(body)
-	r, err := http.NewRequest("POST", baseUrl, reader)
-	assert.Nil(t, err)
-	res, err := http.DefaultClient.Do(r)
-	assert.Nil(t, err)
+	res := createIdTag(t, `{"idTag": "test"}`)
 	assert.Equal(t, 201, res.StatusCode)
 
-	// Delete it again
-	r, err = http.NewRequest("DELETE", baseUrl+"/test", nil)
-	assert.Nil(t, err)
-	res, err = http.DefaultClient.Do(r)
-	assert.Nil(t, err)
+	// Delete it
+	res = deleteIdTag(t, "test")
 	assert.Equal(t, 200, res.StatusCode)
 }
 
@@ -107,15 +102,12 @@ func TestCreateIdTagFull(t *testing.T) {
         "expiryDate": "2015-12-31T20:00:00Z",
         "groupIdTag": "testGroup"
     }`
-	reader := strings.NewReader(body)
-	r, err := http.NewRequest("POST", baseUrl, reader)
-	assert.Nil(t, err)
-	res, err := http.DefaultClient.Do(r)
-	assert.Nil(t, err)
+	// Create the tag
+	res := createIdTag(t, body)
 	assert.Equal(t, 201, res.StatusCode)
 
 	// Fetch it and match the data
-	r, err = http.NewRequest("GET", baseUrl+"/test", nil)
+	r, err := http.NewRequest("GET", baseUrl+"/test", nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -131,50 +123,30 @@ func TestCreateIdTagFull(t *testing.T) {
 	assert.Equal(t, "2015-12-31T20:00:00Z", idTag.ExpiryDate.String())
 	assert.Equal(t, "testGroup", idTag.GroupIdTag)
 
-	// Delete it again
-	r, err = http.NewRequest("DELETE", baseUrl+"/test", nil)
-	assert.Nil(t, err)
-	res, err = http.DefaultClient.Do(r)
-	assert.Nil(t, err)
+	// Delete it
+	res = deleteIdTag(t, "test")
 	assert.Equal(t, 200, res.StatusCode)
 }
 
 // Test creation of IdTag, without required fields
 func TestCreateIdTagMissingRequiredField(t *testing.T) {
 	// Create the tag
-	body := `{"idType": "ISO14443"}`
-	reader := strings.NewReader(body)
-	r, err := http.NewRequest("POST", baseUrl, reader)
-	assert.Nil(t, err)
-	res, err := http.DefaultClient.Do(r)
-	assert.Nil(t, err)
+	res := createIdTag(t, `{"idType": "ISO14443"}`)
 	assert.Equal(t, 400, res.StatusCode)
 }
 
 // Test creation of IdTag, duplicate
 func TestCreateIdTagDuplicate(t *testing.T) {
 	// Create the tag
-	body := `{"idTag": "test"}`
-	reader := strings.NewReader(body)
-	r, err := http.NewRequest("POST", baseUrl, reader)
-	assert.Nil(t, err)
-	res, err := http.DefaultClient.Do(r)
-	assert.Nil(t, err)
+	res := createIdTag(t, `{"idTag": "test"}`)
 	assert.Equal(t, 201, res.StatusCode)
 
 	// Try again
-	reader = strings.NewReader(body)
-	r, err = http.NewRequest("POST", baseUrl, reader)
-	assert.Nil(t, err)
-	res, err = http.DefaultClient.Do(r)
-	assert.Nil(t, err)
+	res = createIdTag(t, `{"idTag": "test"}`)
 	assert.Equal(t, 409, res.StatusCode)
 
 	// Delete it
-	r, err = http.NewRequest("DELETE", baseUrl+"/test", nil)
-	assert.Nil(t, err)
-	res, err = http.DefaultClient.Do(r)
-	assert.Nil(t, err)
+	res = deleteIdTag(t, "test")
 	assert.Equal(t, 200, res.StatusCode)
 }
 
@@ -189,15 +161,11 @@ func TestGetIdTagFull(t *testing.T) {
         "expiryDate": "2015-12-31T20:00:00Z",
         "groupIdTag": "testGroup"
     }`
-	reader := strings.NewReader(body)
-	r, err := http.NewRequest("POST", baseUrl, reader)
-	assert.Nil(t, err)
-	res, err := http.DefaultClient.Do(r)
-	assert.Nil(t, err)
+	res := createIdTag(t, body)
 	assert.Equal(t, 201, res.StatusCode)
 
 	// Fetch it and match the data
-	r, err = http.NewRequest("GET", baseUrl+"/test", nil)
+	r, err := http.NewRequest("GET", baseUrl+"/test", nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -233,16 +201,11 @@ func TestGetIdTagMissing(t *testing.T) {
 // Test deletion of IdTag
 func TestDeleteIdTagSimple(t *testing.T) {
 	// Create the tag
-	body := `{"idTag": "test"}`
-	reader := strings.NewReader(body)
-	r, err := http.NewRequest("POST", baseUrl, reader)
-	assert.Nil(t, err)
-	res, err := http.DefaultClient.Do(r)
-	assert.Nil(t, err)
+	res := createIdTag(t, `{"idTag": "test"}`)
 	assert.Equal(t, 201, res.StatusCode)
 
 	// Delete it
-	r, err = http.NewRequest("DELETE", baseUrl+"/test", nil)
+	r, err := http.NewRequest("DELETE", baseUrl+"/test", nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -270,15 +233,11 @@ func TestUpdateIdTag(t *testing.T) {
         "expiryDate": "2015-12-31T20:00:00Z",
         "groupIdTag": "testGroup"
     }`
-	reader := strings.NewReader(body)
-	r, err := http.NewRequest("POST", baseUrl, reader)
-	assert.Nil(t, err)
-	res, err := http.DefaultClient.Do(r)
-	assert.Nil(t, err)
+	res := createIdTag(t, body)
 	assert.Equal(t, 201, res.StatusCode)
 
 	// Fetch it and match the data
-	r, err = http.NewRequest("GET", baseUrl+"/test", nil)
+	r, err := http.NewRequest("GET", baseUrl+"/test", nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
