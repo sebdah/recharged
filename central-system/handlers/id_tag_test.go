@@ -105,3 +105,30 @@ func TestCreateIdTagMissingRequiredField(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 400, res.StatusCode)
 }
+
+// Test creation of IdTag, duplicate
+func TestCreateIdTagDuplicate(t *testing.T) {
+	// Create the tag
+	body := `{"idTag": "test"}`
+	reader := strings.NewReader(body)
+
+	r, err := http.NewRequest("POST", baseUrl, reader)
+	assert.Nil(t, err)
+	res, err := http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 201, res.StatusCode)
+
+	reader = strings.NewReader(body)
+	r, err = http.NewRequest("POST", baseUrl, reader)
+	assert.Nil(t, err)
+	res, err = http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 409, res.StatusCode)
+
+	// Delete it again
+	r, err = http.NewRequest("DELETE", baseUrl+"/test", nil)
+	assert.Nil(t, err)
+	res, err = http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, res.StatusCode)
+}
