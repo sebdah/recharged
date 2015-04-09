@@ -217,3 +217,91 @@ func TestDeleteIdTagNotExist(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 404, res.StatusCode)
 }
+
+// Test updating of IdTag, full example
+func TestUpdateIdTag(t *testing.T) {
+	// Create the tag
+	body := `
+    {
+        "idTag": "test",
+        "idType": "ISO14443",
+        "language": "en",
+        "expiryDate": "2015-12-31T20:00:00Z",
+        "groupIdTag": "testGroup"
+    }`
+	reader := strings.NewReader(body)
+
+	r, err := http.NewRequest("POST", baseUrl, reader)
+	assert.Nil(t, err)
+	res, err := http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 201, res.StatusCode)
+
+	// Fetch it and match the data
+	r, err = http.NewRequest("GET", baseUrl+"/test", nil)
+	assert.Nil(t, err)
+	res, err = http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, res.StatusCode)
+
+	idTag := new(models.IdTag)
+	decoder := json.NewDecoder(res.Body)
+	err = decoder.Decode(&idTag)
+	assert.Nil(t, err)
+	assert.Equal(t, "test", idTag.IdTag)
+	assert.Equal(t, "ISO14443", idTag.IdType)
+	assert.Equal(t, "en", idTag.Language)
+	assert.Equal(t, "2015-12-31T20:00:00Z", idTag.ExpiryDate.String())
+	assert.Equal(t, "testGroup", idTag.GroupIdTag)
+
+	// Update the tag
+	body = `
+    {
+        "idTag": "test",
+        "idType": "Local1",
+        "language": "sv",
+        "expiryDate": "2016-12-31T20:00:00Z",
+        "groupIdTag": "testGroup2"
+    }`
+	reader = strings.NewReader(body)
+
+	r, err = http.NewRequest("PUT", baseUrl+"/test", reader)
+	assert.Nil(t, err)
+	res, err = http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, res.StatusCode)
+
+	// Fetch it and match the data
+	r, err = http.NewRequest("GET", baseUrl+"/test", nil)
+	assert.Nil(t, err)
+	res, err = http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, res.StatusCode)
+
+	idTag = new(models.IdTag)
+	decoder = json.NewDecoder(res.Body)
+	err = decoder.Decode(&idTag)
+	assert.Nil(t, err)
+	assert.Equal(t, "test", idTag.IdTag)
+	assert.Equal(t, "Local1", idTag.IdType)
+	assert.Equal(t, "sv", idTag.Language)
+	assert.Equal(t, "2016-12-31T20:00:00Z", idTag.ExpiryDate.String())
+	assert.Equal(t, "testGroup2", idTag.GroupIdTag)
+
+	// Delete it again
+	r, err = http.NewRequest("DELETE", baseUrl+"/test", nil)
+	assert.Nil(t, err)
+	res, err = http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, res.StatusCode)
+}
+
+// Test update of IdTag that does not exist
+func TestUpdateIdTagNotExist(t *testing.T) {
+	// Delete it again
+	r, err := http.NewRequest("PUT", baseUrl+"/test", nil)
+	assert.Nil(t, err)
+	res, err := http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 404, res.StatusCode)
+}
