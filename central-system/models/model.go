@@ -20,6 +20,12 @@ func Delete(model Modeller) error {
 	return err
 }
 
+// Drop collection
+func DropCollection(model Modeller) error {
+	err := model.Collection().DropCollection()
+	return err
+}
+
 // Save the model
 func Save(model Modeller) (err error) {
 	if model.GetId() == "" {
