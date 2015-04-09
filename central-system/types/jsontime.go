@@ -23,6 +23,7 @@ func (j *JSONTime) String() string {
 // Override the Time.UnmarshalJSON function
 func (j *JSONTime) UnmarshalJSON(data []byte) (err error) {
 	// Fractional seconds are handled implicitly by Parse.
+	fmt.Println(string(data))
 	j.Time, err = time.Parse(fmt.Sprintf("\"%s\"", time.RFC3339), string(data))
 	return
 }
