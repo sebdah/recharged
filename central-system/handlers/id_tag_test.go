@@ -132,3 +132,57 @@ func TestCreateIdTagDuplicate(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 200, res.StatusCode)
 }
+
+// Test get of IdTag, full example
+func TestGetIdTagFull(t *testing.T) {
+	// Create the tag
+	body := `
+    {
+        "idTag": "test",
+        "idType": "ISO14443",
+        "language": "en",
+        "expiryDate": "2015-12-31T20:00:00Z",
+        "groupIdTag": "testGroup"
+    }`
+	reader := strings.NewReader(body)
+
+	r, err := http.NewRequest("POST", baseUrl, reader)
+	assert.Nil(t, err)
+
+	res, err := http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 201, res.StatusCode)
+
+	// Fetch it and match the data
+	r, err = http.NewRequest("GET", baseUrl+"/test", nil)
+	assert.Nil(t, err)
+	res, err = http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, res.StatusCode)
+
+	idTag := new(models.IdTag)
+	decoder := json.NewDecoder(res.Body)
+	err = decoder.Decode(&idTag)
+	assert.Nil(t, err)
+	assert.Equal(t, "test", idTag.IdTag)
+	assert.Equal(t, "ISO14443", idTag.IdType)
+	assert.Equal(t, "en", idTag.Language)
+	assert.Equal(t, "2015-12-31T20:00:00Z", idTag.ExpiryDate.String())
+	assert.Equal(t, "testGroup", idTag.GroupIdTag)
+
+	// Delete it again
+	r, err = http.NewRequest("DELETE", baseUrl+"/test", nil)
+	assert.Nil(t, err)
+	res, err = http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, res.StatusCode)
+}
+
+// Test fetching IdTag that does not exist
+func TestGetIdTagMissing(t *testing.T) {
+	r, err := http.NewRequest("GET", baseUrl+"/test", nil)
+	assert.Nil(t, err)
+	res, err := http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 404, res.StatusCode)
+}
