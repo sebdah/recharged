@@ -186,3 +186,34 @@ func TestGetIdTagMissing(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 404, res.StatusCode)
 }
+
+// Test deletion of IdTag
+func TestDeleteIdTagSimple(t *testing.T) {
+	// Create the tag
+	body := `{"idTag": "test"}`
+	reader := strings.NewReader(body)
+
+	r, err := http.NewRequest("POST", baseUrl, reader)
+	assert.Nil(t, err)
+
+	res, err := http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 201, res.StatusCode)
+
+	// Delete it again
+	r, err = http.NewRequest("DELETE", baseUrl+"/test", nil)
+	assert.Nil(t, err)
+	res, err = http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, res.StatusCode)
+}
+
+// Test deletion of IdTag that does not exist
+func TestDeleteIdTagNotExist(t *testing.T) {
+	// Delete it again
+	r, err := http.NewRequest("DELETE", baseUrl+"/test", nil)
+	assert.Nil(t, err)
+	res, err := http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 404, res.StatusCode)
+}
