@@ -91,7 +91,7 @@ func TestAuthorizeBasic(t *testing.T) {
 	assert.Equal(t, 200, res.StatusCode)
 	assert.Nil(t, conf.IdTagInfo.GroupTagId)
 	assert.Equal(t, "en", conf.IdTagInfo.Language)
-	assert.Equal(t, "Accepted", conf.IdTagInfo.Status)
+	assert.Equal(t, types.AuthorizationStatusAccepted, conf.IdTagInfo.Status)
 
 	// Delete IdTag
 	deleteIdTag(t, "test")
@@ -113,7 +113,29 @@ func TestAuthorizeFull(t *testing.T) {
 	assert.Equal(t, 200, res.StatusCode)
 	assert.Nil(t, conf.IdTagInfo.GroupTagId)
 	assert.Equal(t, "en", conf.IdTagInfo.Language)
-	assert.Equal(t, "Accepted", conf.IdTagInfo.Status)
+	assert.Equal(t, types.AuthorizationStatusAccepted, conf.IdTagInfo.Status)
+
+	// Delete IdTag
+	deleteIdTag(t, "test")
+}
+
+// Test expired token
+func TestAuthorizeExpired(t *testing.T) {
+	// Create IdTag
+	createIdTag(t, `{ "idTag": "test", "expiryDate": "2014-01-01T00:00:00Z" }`)
+
+	// Build the Authorize.req
+	req := new(messages.AuthorizeReq)
+	idToken := new(types.IdToken)
+	idToken.Id = "test"
+	req.IdTag = *idToken
+
+	// Send the Authorize.req
+	res, conf := authorize(t, *req)
+	assert.Equal(t, 200, res.StatusCode)
+	assert.Nil(t, conf.IdTagInfo.GroupTagId)
+	assert.Equal(t, "en", conf.IdTagInfo.Language)
+	assert.Equal(t, types.AuthorizationStatusExpired, conf.IdTagInfo.Status)
 
 	// Delete IdTag
 	deleteIdTag(t, "test")
