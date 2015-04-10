@@ -109,8 +109,11 @@ func TestAuthorizeFull(t *testing.T) {
 	req.IdTag = *idToken
 
 	// Send the Authorize.req
-	res, _ := authorize(t, *req)
+	res, conf := authorize(t, *req)
 	assert.Equal(t, 200, res.StatusCode)
+	assert.Nil(t, conf.IdTagInfo.GroupTagId)
+	assert.Equal(t, "en", conf.IdTagInfo.Language)
+	assert.Equal(t, "Accepted", conf.IdTagInfo.Status)
 
 	// Delete IdTag
 	deleteIdTag(t, "test")
