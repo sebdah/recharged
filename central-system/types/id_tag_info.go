@@ -6,3 +6,12 @@ type IdTagInfo struct {
 	Status     string   `type:"string" required:"true"`
 	Language   string   `type="LanguageCode" required="false"`
 }
+
+// Constructor
+func NewIdTagInfo() (idTagInfo *IdTagInfo) {
+	idTagInfo = new(IdTagInfo)
+	idTagInfo.Language = "en"
+	idTagInfo.Status = AuthorizationStatusInvalid
+
+	return
+}
