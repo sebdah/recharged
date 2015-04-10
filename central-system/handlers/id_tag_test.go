@@ -128,6 +128,47 @@ func TestCreateIdTagFull(t *testing.T) {
 	assert.Equal(t, 200, res.StatusCode)
 }
 
+// Test setting of the active flag
+func TestCreateIdTagActiveFlag(t *testing.T) {
+	// Create the tag
+	res := createIdTag(t, `{"idTag": "test1", "active": true}`)
+	assert.Equal(t, 201, res.StatusCode)
+	res = createIdTag(t, `{"idTag": "test2", "active": false}`)
+	assert.Equal(t, 201, res.StatusCode)
+
+	// Fetch it and match the data
+	r, err := http.NewRequest("GET", baseUrl+"/test1", nil)
+	assert.Nil(t, err)
+	res, err = http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, res.StatusCode)
+
+	idTag := new(models.IdTag)
+	decoder := json.NewDecoder(res.Body)
+	err = decoder.Decode(&idTag)
+	assert.Nil(t, err)
+	assert.Equal(t, true, idTag.Active)
+
+	// Fetch it and match the data
+	r, err = http.NewRequest("GET", baseUrl+"/test2", nil)
+	assert.Nil(t, err)
+	res, err = http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, res.StatusCode)
+
+	idTag = new(models.IdTag)
+	decoder = json.NewDecoder(res.Body)
+	err = decoder.Decode(&idTag)
+	assert.Nil(t, err)
+	assert.Equal(t, false, idTag.Active)
+
+	// Delete it
+	res = deleteIdTag(t, "test1")
+	assert.Equal(t, 200, res.StatusCode)
+	res = deleteIdTag(t, "test2")
+	assert.Equal(t, 200, res.StatusCode)
+}
+
 // Test creation of IdTag, without required fields
 func TestCreateIdTagMissingRequiredField(t *testing.T) {
 	// Create the tag

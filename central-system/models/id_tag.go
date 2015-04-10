@@ -14,7 +14,7 @@ type IdTag struct {
 	ExpiryDate types.JSONTime `json:"expiryDate" type:"Time" required:"false"`
 	GroupIdTag string         `json:"groupIdTag" type:"string" required:"false"`
 	Language   string         `json:"language" type:"string" required:"false" default:"en"`
-	Active     bool           `json:"-" type:"bool" required:"true" default:"true"`
+	Active     bool           `json:"active" type:"bool" required:"true" default:"true"`
 }
 
 // Constructor
