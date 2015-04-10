@@ -4,35 +4,62 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/sebdah/recharged/central-system/messages"
+	"github.com/sebdah/recharged/central-system/models"
 	"github.com/sebdah/recharged/central-system/types"
+	"gopkg.in/mgo.v2/bson"
 )
 
-func AuthorizeReqHandler(rw http.ResponseWriter, req *http.Request) {
+func AuthorizeReqHandler(w http.ResponseWriter, r *http.Request) {
+	// Parse the incoming request
 	authorizeReq := new(messages.AuthorizeReq)
-
-	decoder := json.NewDecoder(req.Body)
+	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&authorizeReq)
 	if err != nil {
-		log.Printf("Unable to parse Authorize.req")
-		rw.WriteHeader(http.StatusBadRequest)
+		log.Printf("Unable to parse Authorize.req: %s\n", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	idTagInfo := new(types.IdTagInfo)
-	idTagInfo.Status = types.AuthorizationStatusAccepted
+	// Get the IdTag
+	idTag := models.IdTag{}
+	err = idTag.Collection().Find(bson.M{"idtag": authorizeReq.IdTag.Id}).One(&idTag)
+	if err != nil {
+		if err.Error() == "not found" {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		} else {
+			log.Printf("MongoDB error: %s\n", err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+	log.Println(idTag)
 
+	// Create the IdTagInfo for the response
+	idTagInfo := new(types.IdTagInfo)
+
+	// Set the status flag
+	if idTag.Active == false { // Check for deactivation
+		idTagInfo.Status = types.AuthorizationStatusBlocked
+	}
+	if idTag.ExpiryDate.Before(time.Now().UTC()) == true {
+		idTagInfo.Status = types.AuthorizationStatusExpired
+	}
+
+	// Populate the response configuration
 	authorizeConf := new(messages.AuthorizeConf)
 	authorizeConf.IdTagInfo = idTagInfo
-
 	authConfJson, err := json.Marshal(authorizeConf)
 	if err != nil {
-		rw.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
 		log.Fatal(err)
 		return
 	}
 
-	rw.WriteHeader(http.StatusOK)
-	rw.Write(authConfJson)
+	// Respond
+	w.WriteHeader(http.StatusOK)
+	w.Write(authConfJson)
 }
