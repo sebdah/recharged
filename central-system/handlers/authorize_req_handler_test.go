@@ -119,6 +119,28 @@ func TestAuthorizeFull(t *testing.T) {
 	deleteIdTag(t, "test")
 }
 
+// Test blocked IdTag
+func TestAuthorizeBlocked(t *testing.T) {
+	// Create IdTag
+	createIdTag(t, `{ "idTag": "test", "active": false }`)
+
+	// Build the Authorize.req
+	req := new(messages.AuthorizeReq)
+	idToken := new(types.IdToken)
+	idToken.Id = "test"
+	req.IdTag = *idToken
+
+	// Send the Authorize.req
+	res, conf := authorize(t, *req)
+	assert.Equal(t, 200, res.StatusCode)
+	assert.Nil(t, conf.IdTagInfo.GroupTagId)
+	assert.Equal(t, "en", conf.IdTagInfo.Language)
+	assert.Equal(t, types.AuthorizationStatusBlocked, conf.IdTagInfo.Status)
+
+	// Delete IdTag
+	deleteIdTag(t, "test")
+}
+
 // Test expired token
 func TestAuthorizeExpired(t *testing.T) {
 	// Create IdTag
@@ -141,7 +163,7 @@ func TestAuthorizeExpired(t *testing.T) {
 	deleteIdTag(t, "test")
 }
 
-// Test with invalid IdTag
+// Test invalid IdTag
 func TestAuthorizeInvalid(t *testing.T) {
 	// Build the Authorize.req
 	req := new(messages.AuthorizeReq)
