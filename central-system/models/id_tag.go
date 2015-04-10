@@ -14,7 +14,7 @@ type IdTag struct {
 	ExpiryDate types.JSONTime `json:"expiryDate" type:"Time" required:"false"`
 	GroupIdTag string         `json:"groupIdTag" type:"string" required:"false"`
 	Language   string         `json:"language" type:"string" required:"false" default:"en"`
-	Active     bool           `json:"-" type:"bool" required:"true" default:"false"`
+	Active     bool           `json:"-" type:"bool" required:"true" default:"true"`
 }
 
 // Constructor
@@ -22,7 +22,7 @@ func NewIdTag() (idTag *IdTag) {
 	idTag = new(IdTag)
 	idTag.IdType = types.IdTypeISO14443
 	idTag.Language = "en"
-	idTag.Active = false
+	idTag.Active = true
 
 	return
 }
