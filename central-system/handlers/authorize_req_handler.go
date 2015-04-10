@@ -24,13 +24,10 @@ func AuthorizeReqHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get the IdTag
-	idTag := models.IdTag{}
+	idTag := models.NewIdTag()
 	err = idTag.Collection().Find(bson.M{"idtag": authorizeReq.IdTag.Id}).One(&idTag)
 	if err != nil {
-		if err.Error() == "not found" {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		} else {
+		if err.Error() != "not found" { // Not found documents are handled below
 			log.Printf("MongoDB error: %s\n", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -48,6 +45,8 @@ func AuthorizeReqHandler(w http.ResponseWriter, r *http.Request) {
 		if idTag.ExpiryDate.Before(time.Now().UTC()) == true {
 			idTagInfo.Status = types.AuthorizationStatusExpired
 		}
+	} else if idTag.Id == "" { // The idTag does NOT exist
+		idTagInfo.Status = types.AuthorizationStatusInvalid
 	} else {
 		idTagInfo.Status = types.AuthorizationStatusAccepted
 	}

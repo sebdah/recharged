@@ -141,8 +141,8 @@ func TestAuthorizeExpired(t *testing.T) {
 	deleteIdTag(t, "test")
 }
 
-// Test with unknown IdTag
-func TestAuthorizeUnknownIdTag(t *testing.T) {
+// Test with invalid IdTag
+func TestAuthorizeInvalid(t *testing.T) {
 	// Build the Authorize.req
 	req := new(messages.AuthorizeReq)
 	idToken := new(types.IdToken)
@@ -150,6 +150,9 @@ func TestAuthorizeUnknownIdTag(t *testing.T) {
 	req.IdTag = *idToken
 
 	// Send the Authorize.req
-	res, _ := authorize(t, *req)
-	assert.Equal(t, 404, res.StatusCode)
+	res, conf := authorize(t, *req)
+	assert.Equal(t, 200, res.StatusCode)
+	assert.Nil(t, conf.IdTagInfo.GroupTagId)
+	assert.Equal(t, "en", conf.IdTagInfo.Language)
+	assert.Equal(t, types.AuthorizationStatusInvalid, conf.IdTagInfo.Status)
 }
