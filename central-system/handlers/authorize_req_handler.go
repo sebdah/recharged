@@ -36,17 +36,20 @@ func AuthorizeReqHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	log.Println(idTag)
 
 	// Create the IdTagInfo for the response
-	idTagInfo := new(types.IdTagInfo)
+	idTagInfo := types.NewIdTagInfo()
 
 	// Set the status flag
+	beginning, _ := time.Parse(time.RFC3339, "0001-01-01T00:00:00Z")
 	if idTag.Active == false { // Check for deactivation
 		idTagInfo.Status = types.AuthorizationStatusBlocked
-	}
-	if idTag.ExpiryDate.Before(time.Now().UTC()) == true {
-		idTagInfo.Status = types.AuthorizationStatusExpired
+	} else if idTag.ExpiryDate.Equal(beginning) == false {
+		if idTag.ExpiryDate.Before(time.Now().UTC()) == true {
+			idTagInfo.Status = types.AuthorizationStatusExpired
+		}
+	} else {
+		idTagInfo.Status = types.AuthorizationStatusAccepted
 	}
 
 	// Populate the response configuration
