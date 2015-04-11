@@ -67,3 +67,9 @@ func Update(model Modeller) (err error) {
 	err = model.Collection().Update(bson.M{"_id": model.GetId()}, model)
 	return
 }
+
+// Upsert the model
+func Upsert(selector interface{}, model Modeller) (err error) {
+	_, err = model.Collection().Upsert(selector, model)
+	return
+}
