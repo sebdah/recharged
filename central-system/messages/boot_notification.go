@@ -1,5 +1,7 @@
 package messages
 
+import "github.com/sebdah/recharged/central-system/types"
+
 type BootNotificationReq struct {
 	ChargePointModel        string `json:"chargePointModel" type:"string" required:"true"`
 	ChargePointVendor       string `json:"chargePointVendor" type:"string" required:"true"`
@@ -8,7 +10,7 @@ type BootNotificationReq struct {
 }
 
 type BootNotificationConf struct {
-	CurrentTime       typse.JSONTime `json:"currentTime" type:"time.Time" required:"true"`
+	CurrentTime       types.JSONTime `json:"currentTime" type:"time.Time" required:"true"`
 	HeartbeatInterval int64          `json:"heartbeatInterval" type:"int" required:"false"`
-	Status            bool           `json:"status" type:"bool" required:"true"`
+	Status            string         `json:"status" type:"string" required:"true"`
 }
