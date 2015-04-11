@@ -41,6 +41,10 @@ func Router() *mux.Router {
 		Path("/bootNotification").
 		Methods("POST").
 		HandlerFunc(handlers.BootNotificationReqHandler)
+	occp20jRouter.
+		Path("/dataTransfer").
+		Methods("POST").
+		HandlerFunc(handlers.DataTransferReqHandler)
 
 	return router
 }
