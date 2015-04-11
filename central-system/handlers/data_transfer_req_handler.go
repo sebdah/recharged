@@ -9,7 +9,7 @@ import (
 	"github.com/sebdah/recharged/central-system/types"
 )
 
-func DataTransferReqHander(w http.ResponseWriter, r *http.Response) {
+func DataTransferReqHandler(w http.ResponseWriter, r *http.Request) {
 	// Populate the response configuration
 	conf := new(messages.DataTransferConf)
 	conf.Status = types.DataTransferStatusUnknownVendorId
