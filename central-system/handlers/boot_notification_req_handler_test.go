@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/sebdah/recharged/central-system/messages"
 	"github.com/sebdah/recharged/central-system/models"
@@ -65,5 +66,6 @@ func TestBootNotificationBasic(t *testing.T) {
 	res, conf := sendBootNotification(t, req)
 	assert.Equal(t, 200, res.StatusCode)
 	assert.Equal(t, 10, conf.HeartbeatInterval)
+	assert.True(t, time.Now().UTC().After(conf.CurrentTime.Time))
 	assert.Equal(t, "Accepted", conf.Status)
 }
