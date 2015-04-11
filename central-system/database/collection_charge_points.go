@@ -2,19 +2,17 @@ package database
 
 import "gopkg.in/mgo.v2"
 
-var collectionName string = "chargePoints"
-
 func CreateCollectionChargePoints() {
 	database := GetDb()
 	collection := mgo.Collection{
 		Database: database,
-		Name:     collectionName,
-		FullName: database.Name + "." + collectionName,
+		Name:     "chargePoints",
+		FullName: database.Name + ".chargePoints",
 	}
 	collection.Create(&mgo.CollectionInfo{})
 }
 
-func GetCollectionChargePoints() {
+func GetCollectionChargePoints() *mgo.Collection {
 	database := GetDb()
-	return database.C(collectionName)
+	return database.C("chargePoints")
 }

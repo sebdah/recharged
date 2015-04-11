@@ -9,13 +9,13 @@ func CreateCollectionIdTags() {
 	database := GetDb()
 	collection := mgo.Collection{
 		Database: database,
-		Name:     collectionName,
-		FullName: database.Name + "." + collectionName,
+		Name:     "idTags",
+		FullName: database.Name + ".idTags",
 	}
 	collection.Create(&mgo.CollectionInfo{})
 }
 
 func GetCollectionIdTags() *mgo.Collection {
 	database := GetDb()
-	return database.C(collectionName)
+	return database.C("idTags")
 }
