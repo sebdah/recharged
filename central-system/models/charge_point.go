@@ -27,7 +27,11 @@ func (this *ChargePoint) Collection() *mgo.Collection {
 
 // Indexes, satisfies the Modeller interface
 func (this *ChargePoint) Indexes() (indexes []*mgo.Index) {
-	index := mgo.Index{}
+	imsiIndex := mgo.Index{
+		Key:    []string{"imsi"},
+		Unique: true,
+	}
+
 	indexes = append(indexes, &index)
 
 	return
