@@ -57,7 +57,7 @@ func sendBootNotification(t *testing.T, req *messages.BootNotificationReq) (res 
 func TestBootNotificationBasic(t *testing.T) {
 	// Build the request
 	req := new(messages.BootNotificationReq)
-	req.ChargePointVendor = "MyVendor"
+	req.ChargePointVendor = "MyVendorTest1"
 	req.ChargePointModel = "MyModel"
 	req.ChargePointSerialNumber = "12345678"
 	req.Imsi = "123412341234"
@@ -68,4 +68,51 @@ func TestBootNotificationBasic(t *testing.T) {
 	assert.Equal(t, 10, conf.HeartbeatInterval)
 	assert.True(t, time.Now().UTC().After(conf.CurrentTime.Time))
 	assert.Equal(t, "Accepted", conf.Status)
+}
+
+// Full test of the functionality
+func TestBootNotificationFull(t *testing.T) {
+	// Build the request
+	req := new(messages.BootNotificationReq)
+	req.ChargePointVendor = "MyVendorTest2"
+	req.ChargePointModel = "MyModel"
+
+	// Send the request
+	res, conf := sendBootNotification(t, req)
+	assert.Equal(t, 200, res.StatusCode)
+	assert.Equal(t, 10, conf.HeartbeatInterval)
+	assert.True(t, time.Now().UTC().After(conf.CurrentTime.Time))
+	assert.Equal(t, "Accepted", conf.Status)
+}
+
+// Test missing vendor
+func TestBootNotificationMissingVendor(t *testing.T) {
+	// Build the request
+	req := new(messages.BootNotificationReq)
+	req.ChargePointModel = "MyModel"
+	req.ChargePointSerialNumber = "12345678"
+	req.Imsi = "123412341234"
+
+	// Send the request
+	res, conf := sendBootNotification(t, req)
+	assert.Equal(t, 200, res.StatusCode)
+	assert.Equal(t, 10, conf.HeartbeatInterval)
+	assert.True(t, time.Now().UTC().After(conf.CurrentTime.Time))
+	assert.Equal(t, "Rejected", conf.Status)
+}
+
+// Test missing model
+func TestBootNotificationMissingModel(t *testing.T) {
+	// Build the request
+	req := new(messages.BootNotificationReq)
+	req.ChargePointVendor = "MyVendor"
+	req.ChargePointSerialNumber = "12345678"
+	req.Imsi = "123412341234"
+
+	// Send the request
+	res, conf := sendBootNotification(t, req)
+	assert.Equal(t, 200, res.StatusCode)
+	assert.Equal(t, 10, conf.HeartbeatInterval)
+	assert.True(t, time.Now().UTC().After(conf.CurrentTime.Time))
+	assert.Equal(t, "Rejected", conf.Status)
 }
