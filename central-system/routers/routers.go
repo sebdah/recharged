@@ -37,6 +37,10 @@ func Router() *mux.Router {
 		Path("/authorize").
 		Methods("POST").
 		HandlerFunc(handlers.AuthorizeReqHandler)
+	occp20jRouter.
+		Path("/bootNotification").
+		Methods("POST").
+		HandlerFunc(handlers.BootNotificationReqHandler)
 
 	return router
 }
