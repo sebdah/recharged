@@ -52,6 +52,13 @@ func (this *DataTransferReq) ParseJson(data string) (err error) {
 }
 
 // String representation
+func (this *DataTransferReq) String() (str string) {
+	js, _ := json.Marshal(this)
+	str = string(js)
+	return
+}
+
+// String representation
 func (this *DataTransferConf) String() (str string) {
 	js, _ := json.Marshal(this)
 	str = string(js)

@@ -98,6 +98,13 @@ func (this *BootNotificationReq) ParseJson(data string) (err error) {
 }
 
 // String representation
+func (this *BootNotificationReq) String() (str string) {
+	js, _ := json.Marshal(this)
+	str = string(js)
+	return
+}
+
+// String representation
 func (this *BootNotificationConf) String() (str string) {
 	js, _ := json.Marshal(this)
 	str = string(js)

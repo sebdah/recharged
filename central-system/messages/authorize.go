@@ -83,6 +83,13 @@ func (this *AuthorizeReq) ParseJson(data string) (err error) {
 }
 
 // String representation
+func (this *AuthorizeReq) String() (str string) {
+	js, _ := json.Marshal(this)
+	str = string(js)
+	return
+}
+
+// String representation
 func (this *AuthorizeConf) String() (str string) {
 	js, _ := json.Marshal(this)
 	str = string(js)
