@@ -3,10 +3,14 @@ package routers
 import (
 	"github.com/gorilla/mux"
 	"github.com/sebdah/recharged/central-system/handlers"
+	"github.com/sebdah/recharged/central-system/transports"
 )
 
 func Router() *mux.Router {
 	router := mux.NewRouter()
+
+	// OCPP2.0-J
+	router.Path("/ocpp/v2.0j/ws").HandlerFunc(transports.WebsocketTransport)
 
 	// Manager
 	adminRouter := router.PathPrefix("/admin").Subrouter()
@@ -30,21 +34,6 @@ func Router() *mux.Router {
 		Path("/idTags/{id}").
 		Methods("PUT").
 		HandlerFunc(handlers.IdTagUpdateHandler)
-
-	// OCPP2.0-J
-	occp20jRouter := router.PathPrefix("/ocpp/v2.0j").Subrouter()
-	occp20jRouter.
-		Path("/authorize").
-		Methods("POST").
-		HandlerFunc(handlers.AuthorizeReqHandler)
-	occp20jRouter.
-		Path("/bootNotification").
-		Methods("POST").
-		HandlerFunc(handlers.BootNotificationReqHandler)
-	occp20jRouter.
-		Path("/dataTransfer").
-		Methods("POST").
-		HandlerFunc(handlers.DataTransferReqHandler)
 
 	return router
 }
