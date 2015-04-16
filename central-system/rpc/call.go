@@ -22,6 +22,13 @@ func NewCall() (call *Call) {
 // Populate the variables with data from the request
 func (this *Call) Populate(msg string) (callError *CallError) {
 	match := callRegExp.FindStringSubmatch(msg)
+	if len(match) == 0 {
+		genericError := NewGenericError()
+		genericError.SetDetails(`{"message": "Malformatted message"}`)
+		callError = NewCallError(this.UniqueId, genericError)
+		return
+	}
+
 	result := make(map[string]string)
 	for i, name := range callRegExp.SubexpNames() {
 		result[name] = match[i]
@@ -30,16 +37,6 @@ func (this *Call) Populate(msg string) (callError *CallError) {
 	this.UniqueId = result["uniqueId"]
 	this.Action = result["action"]
 	this.Payload = result["payload"]
-
-	// Check for missing UniqueId
-	if this.UniqueId == "" {
-		callError = NewCallError(this.UniqueId, NewGenericError())
-	}
-
-	// Check for missing Action
-	if this.Action == "" {
-		callError = NewCallError(this.UniqueId, NewNotImplementedError())
-	}
 
 	// Convert payload to {} if it's set to "null"
 	if this.Payload == "null" {
