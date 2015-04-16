@@ -13,6 +13,9 @@ type Call struct {
 // Constructor
 func NewCall() (call *Call) {
 	call = new(Call)
+	call.UniqueId = ""
+	call.Action = ""
+	call.Payload = "{}"
 	return
 }
 
