@@ -21,7 +21,7 @@ func NewCallError(uniqueId string, err Errorer) (callError *CallError) {
 // Get the string representation of the CallError
 func (this *CallError) String() string {
 	return fmt.Sprintf(
-		`[4, "%s", "%s", "%s", %s]`,
+		`[4, "%s", "%s", %s]`,
 		this.UniqueId,
 		this.ErrorCode,
 		this.ErrorDescription,
