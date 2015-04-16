@@ -65,12 +65,6 @@ func (this *AuthorizeReq) Process() (conf *AuthorizeConf, errorer rpc.Errorer) {
 	// Populate the response configuration
 	conf = new(AuthorizeConf)
 	conf.IdTagInfo = idTagInfo
-	//conf, err = json.Marshal(authorizeConf)
-	//if err != nil {
-	//	errorer = rpc.NewInternalError()
-	//	errorer.SetDetails(fmt.Sprintf(`{"message": "%s"}`, err.Error()))
-	//	return
-	//}
 
 	return
 }
