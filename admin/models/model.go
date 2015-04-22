@@ -22,6 +22,7 @@ func Delete(model Modeller) error {
 
 // Drop collection
 func DropCollection(model Modeller) error {
+	log.Printf("Dropping collection '%s'\n", model.Collection().Name)
 	err := model.Collection().DropCollection()
 	return err
 }
