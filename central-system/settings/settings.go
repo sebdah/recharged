@@ -1,24 +1,33 @@
 package settings
 
-import "os"
+import (
+	"net/url"
+	"os"
+)
 
 type Settings struct {
-	MongoDBHosts string
-	DatabaseName string
+	AdminServiceUrl *url.URL
+	DatabaseName    string
+	MongoDBHosts    string
 }
 
 func GetSettings() Settings {
-	devSettings := Settings{
-		MongoDBHosts: "localhost:27017",
-		DatabaseName: "rechargedDev",
-	}
-
 	environment := os.Getenv("ENV")
 
 	switch {
 	case environment == "dev":
-		return devSettings
+		return GetDevSettings()
 	default:
-		return devSettings
+		return GetDevSettings()
 	}
+}
+
+func GetDevSettings() (settings Settings) {
+	adminServiceUrl, _ := url.Parse("http://localhost:6000")
+
+	settings.AdminServiceUrl = adminServiceUrl
+	settings.DatabaseName = "rechargedDevCs"
+	settings.MongoDBHosts = "lolcahost:27017"
+
+	return
 }
