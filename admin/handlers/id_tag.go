@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
-	"github.com/sebdah/recharged/central-system/database"
-	"github.com/sebdah/recharged/central-system/models"
+	"github.com/sebdah/recharged/admin/database"
+	"github.com/sebdah/recharged/admin/models"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -26,7 +26,7 @@ func getIdTag(w http.ResponseWriter, r *http.Request) (idTag models.IdTag) {
 			return
 		} else {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
-			log.Printf("Error querying MongoDB: %s", err)
+			log.Printf("Error querying MongoDB: %s\n", err.Error())
 			return
 		}
 	}

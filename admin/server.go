@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/sebdah/recharged/central-system/database"
-	"github.com/sebdah/recharged/central-system/models"
-	"github.com/sebdah/recharged/central-system/routers"
+	"github.com/sebdah/recharged/admin/database"
+	"github.com/sebdah/recharged/admin/models"
+	"github.com/sebdah/recharged/admin/routers"
 )
 
 func main() {

@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/sebdah/recharged/central-system/models"
-	"github.com/sebdah/recharged/central-system/routers"
+	"github.com/sebdah/recharged/admin/models"
+	"github.com/sebdah/recharged/admin/routers"
 	"github.com/stretchr/testify/assert"
 )
 

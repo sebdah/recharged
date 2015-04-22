@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/sebdah/recharged/central-system/handlers"
+	"github.com/sebdah/recharged/admin/handlers"
 )
 
 func Router() *mux.Router {

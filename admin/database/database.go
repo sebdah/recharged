@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/sebdah/recharged/central-system/settings"
+	"github.com/sebdah/recharged/admin/settings"
 	"gopkg.in/mgo.v2"
 )
 
