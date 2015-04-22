@@ -30,6 +30,26 @@ func Router() *mux.Router {
 		Path("/idTags/{id}").
 		Methods("PUT").
 		HandlerFunc(handlers.IdTagUpdateHandler)
+	adminRouter.
+		Path("/chargePoints").
+		Methods("GET").
+		HandlerFunc(handlers.ChargePointListHandler)
+	adminRouter.
+		Path("/chargePoints").
+		Methods("POST").
+		HandlerFunc(handlers.ChargePointCreateHandler)
+	adminRouter.
+		Path("/chargePoints/{id}").
+		Methods("GET").
+		HandlerFunc(handlers.ChargePointGetHandler)
+	adminRouter.
+		Path("/chargePoints/{id}").
+		Methods("DELETE").
+		HandlerFunc(handlers.ChargePointDeleteHandler)
+	adminRouter.
+		Path("/chargePoints/{id}").
+		Methods("PUT").
+		HandlerFunc(handlers.ChargePointUpdateHandler)
 
 	return router
 }

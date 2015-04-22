@@ -3,7 +3,6 @@ package handlers_test
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -12,12 +11,6 @@ import (
 	"github.com/sebdah/recharged/admin/models"
 	"github.com/sebdah/recharged/admin/routers"
 	"github.com/stretchr/testify/assert"
-)
-
-var (
-	server  *httptest.Server
-	reader  io.Reader
-	baseUrl string
 )
 
 // Initializer
