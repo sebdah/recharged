@@ -293,7 +293,7 @@ func TestChargePointValidationOK(t *testing.T) {
 	assert.Equal(t, 201, res.StatusCode)
 
 	// See if it exists
-	r, err := http.NewRequest("GET", chargePointsBaseUrl+"/validate/model1/vendor1", nil)
+	r, err := http.NewRequest("GET", chargePointsBaseUrl+"/validate/vendor1/model1", nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -307,7 +307,7 @@ func TestChargePointValidationOK(t *testing.T) {
 // Test validation of model/vendor combination
 func TestChargePointValidationFail(t *testing.T) {
 	// See if it exists
-	r, err := http.NewRequest("GET", chargePointsBaseUrl+"/validate/model1/vendor1", nil)
+	r, err := http.NewRequest("GET", chargePointsBaseUrl+"/validate/vendor1/model1", nil)
 	assert.Nil(t, err)
 	res, err := http.DefaultClient.Do(r)
 	assert.Nil(t, err)

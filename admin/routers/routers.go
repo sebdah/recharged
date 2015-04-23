@@ -52,7 +52,7 @@ func Router() *mux.Router {
 		Methods("PUT").
 		HandlerFunc(handlers.ChargePointUpdateHandler)
 	router.
-		Path("/chargepoints/validate/{model}/{vendor}").
+		Path("/chargepoints/validate/{vendor}/{model}").
 		Methods("GET").
 		HandlerFunc(handlers.ChargePointValidationHandler)
 
