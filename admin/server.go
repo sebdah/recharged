@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/sebdah/recharged/central-system/database"
-	"github.com/sebdah/recharged/central-system/models"
-	"github.com/sebdah/recharged/central-system/routers"
+	"github.com/sebdah/recharged/admin/database"
+	"github.com/sebdah/recharged/admin/models"
+	"github.com/sebdah/recharged/admin/routers"
 )
 
 func main() {
@@ -21,16 +21,18 @@ func main() {
 	// Set default port
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "5000"
+		port = "6000"
 	}
 
 	// Create databases if needed
 	if env == "dev" {
 		log.Println("Ensuring databases")
-		database.CreateCollectionBootNotificationLog()
+		database.CreateCollectionIdTags()
+		database.CreateCollectionChargePoints()
 
 		log.Println("Ensuring indexes")
-		models.EnsureIndexes(new(models.BootNotificationLog))
+		models.EnsureIndexes(new(models.IdTag))
+		models.EnsureIndexes(new(models.ChargePoint))
 	}
 
 	log.Printf("Starting webserver on port %s\n", port)

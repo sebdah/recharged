@@ -2,14 +2,14 @@ package messages
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"net/http"
 	"strings"
 	"time"
 
-	"github.com/sebdah/recharged/central-system/models"
 	"github.com/sebdah/recharged/central-system/rpc"
 	"github.com/sebdah/recharged/central-system/types"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type AuthorizeReq struct {
@@ -34,15 +34,17 @@ func NewAuthorizeConf() (conf *AuthorizeConf) {
 // Process the request, when it has been populated
 func (this *AuthorizeReq) Process() (conf *AuthorizeConf, errorer rpc.Errorer) {
 	// Get the IdTag
-	idTag := models.NewIdTag()
-	err := idTag.Collection().Find(bson.M{"idtag": this.IdTag.Id}).One(&idTag)
+	idTag := types.NewIdTag()
+	res, err := http.Get(configuration.AdminServiceUrl.String() + "/idtags/" + this.IdTag.Id)
 	if err != nil {
-		if err.Error() != "not found" { // Not found documents are handled below
-			log.Printf("MongoDB error: %s\n", err)
-			errorer = rpc.NewPropertyConstraintViolation()
-			errorer.SetDetails(`{"message": "IdTag not found"}`)
-			return
-		}
+		errorer = rpc.NewInternalError()
+		errorer.SetDetails(fmt.Sprintf(`{"message": "%s"}`, err.Error()))
+		return
+	}
+	if res.StatusCode == 404 {
+		errorer = rpc.NewPropertyConstraintViolation()
+		errorer.SetDetails(`{"message": "IdTag not found"}`)
+		return
 	}
 
 	// Create the IdTagInfo for the response

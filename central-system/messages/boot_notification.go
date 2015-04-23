@@ -2,14 +2,15 @@ package messages
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"net/http"
 	"strings"
 	"time"
 
 	"github.com/sebdah/recharged/central-system/models"
 	"github.com/sebdah/recharged/central-system/rpc"
 	"github.com/sebdah/recharged/central-system/types"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type BootNotificationReq struct {
@@ -30,8 +31,11 @@ func NewBootNotificationReq() (req *BootNotificationReq) {
 	return
 }
 
-func NewBootNotificationConf() (conf *BootNotificationConf) {
+func NewBootNotificationConf(status string) (conf *BootNotificationConf) {
 	conf = new(BootNotificationConf)
+	conf.CurrentTime.Time = time.Now()
+	conf.HeartbeatInterval = 10
+	conf.Status = status
 	return
 }
 
@@ -40,47 +44,38 @@ func (this *BootNotificationReq) Process() (conf *BootNotificationConf, errorer 
 	var err error
 
 	// Build the ChargePoint
-	chargePoint := models.NewChargePoint()
+	chargePoint := types.NewChargePoint()
 	chargePoint.SerialNumber = this.ChargePointSerialNumber
 	chargePoint.Vendor = this.ChargePointVendor
 	chargePoint.Model = this.ChargePointModel
 	chargePoint.Imsi = this.Imsi
 
-	// Set status and update database
-	status := types.GenericStatusNotSupported
-	if this.ChargePointVendor == "" { // Vendor is required
-		status = types.GenericStatusRejected
-	} else if this.ChargePointModel == "" { // Model is required
-		status = types.GenericStatusRejected
-	} else if this.ChargePointSerialNumber != "" { // serialNumber:set
-		status = types.GenericStatusAccepted
-		err = models.Upsert(
-			bson.M{"serialnumber": chargePoint.SerialNumber},
-			chargePoint)
-	} else if this.Imsi != "" {
-		status = types.GenericStatusAccepted
-		err = models.Upsert(
-			bson.M{"imsi": chargePoint.Imsi},
-			chargePoint)
-	} else {
-		status = types.GenericStatusAccepted
-		err = models.Upsert(
-			bson.M{
-				"vendor": chargePoint.Vendor,
-				"model":  chargePoint.Model,
-			},
-			chargePoint)
-	}
+	// Ensure that the charge point exists in the system
+	res, err := http.Get(fmt.Sprintf(
+		"%s/chargepoints/validate/%s/%s",
+		configuration.AdminServiceUrl.String(),
+		chargePoint.Vendor,
+		chargePoint.Model))
 	if err != nil {
-		log.Printf("Error validating ChargePoint: %s", err)
-		status = types.GenericStatusRejected
+		conf = NewBootNotificationConf(types.GenericStatusRejected)
+		log.Printf("Error validating ChargePoint: %s", err.Error())
+		return
+	}
+	if res.StatusCode == 404 {
+		conf = NewBootNotificationConf(types.GenericStatusRejected)
+		return
 	}
 
-	// Build response
-	conf = new(BootNotificationConf)
-	conf.CurrentTime.Time = time.Now()
-	conf.HeartbeatInterval = 10
-	conf.Status = status
+	// Update the database with the boot notification
+	bootNotificationLog := models.NewBootNotificationLog()
+	bootNotificationLog.Vendor = chargePoint.Vendor
+	bootNotificationLog.Model = chargePoint.Model
+	bootNotificationLog.SerialNumber = chargePoint.SerialNumber
+	bootNotificationLog.Imsi = chargePoint.Imsi
+	models.Save(bootNotificationLog)
+
+	// Return success response
+	conf = NewBootNotificationConf(types.GenericStatusAccepted)
 
 	return
 }

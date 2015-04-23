@@ -24,3 +24,4 @@ _testmain.go
 *.prof
 
 central-system/central-system
+admin/admin

@@ -3,27 +3,22 @@ package handlers_test
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
-	"github.com/sebdah/recharged/central-system/models"
-	"github.com/sebdah/recharged/central-system/routers"
+	"github.com/sebdah/recharged/admin/models"
+	"github.com/sebdah/recharged/admin/routers"
 	"github.com/stretchr/testify/assert"
 )
 
-var (
-	server  *httptest.Server
-	reader  io.Reader
-	baseUrl string
-)
+var idTagsBaseUrl string
 
 // Initializer
 func init() {
 	server = httptest.NewServer(routers.Router())
-	baseUrl = fmt.Sprintf("%s/admin/idTags", server.URL)
+	idTagsBaseUrl = fmt.Sprintf("%s/idtags", server.URL)
 
 	// Prepare the database
 	idTag := new(models.IdTag)
@@ -34,7 +29,7 @@ func init() {
 // Helper - Create idTag
 func createIdTag(t *testing.T, body string) (res *http.Response) {
 	reader := strings.NewReader(body)
-	r, err := http.NewRequest("POST", baseUrl, reader)
+	r, err := http.NewRequest("POST", idTagsBaseUrl, reader)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -43,7 +38,7 @@ func createIdTag(t *testing.T, body string) (res *http.Response) {
 
 // Helper - Delete idTag
 func deleteIdTag(t *testing.T, idTag string) (res *http.Response) {
-	r, err := http.NewRequest("DELETE", baseUrl+"/"+idTag, nil)
+	r, err := http.NewRequest("DELETE", idTagsBaseUrl+"/"+idTag, nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -61,7 +56,7 @@ func TestListIdTagSimple(t *testing.T) {
 	assert.Equal(t, 201, res.StatusCode)
 
 	// List all IdTags
-	r, err := http.NewRequest("GET", baseUrl, reader)
+	r, err := http.NewRequest("GET", idTagsBaseUrl, reader)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -107,7 +102,7 @@ func TestCreateIdTagFull(t *testing.T) {
 	assert.Equal(t, 201, res.StatusCode)
 
 	// Fetch it and match the data
-	r, err := http.NewRequest("GET", baseUrl+"/test", nil)
+	r, err := http.NewRequest("GET", idTagsBaseUrl+"/"+"test", nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -137,7 +132,7 @@ func TestCreateIdTagActiveFlag(t *testing.T) {
 	assert.Equal(t, 201, res.StatusCode)
 
 	// Fetch it and match the data
-	r, err := http.NewRequest("GET", baseUrl+"/test1", nil)
+	r, err := http.NewRequest("GET", idTagsBaseUrl+"/"+"test1", nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -150,7 +145,7 @@ func TestCreateIdTagActiveFlag(t *testing.T) {
 	assert.Equal(t, true, idTag.Active)
 
 	// Fetch it and match the data
-	r, err = http.NewRequest("GET", baseUrl+"/test2", nil)
+	r, err = http.NewRequest("GET", idTagsBaseUrl+"/"+"test2", nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -206,7 +201,7 @@ func TestGetIdTagFull(t *testing.T) {
 	assert.Equal(t, 201, res.StatusCode)
 
 	// Fetch it and match the data
-	r, err := http.NewRequest("GET", baseUrl+"/test", nil)
+	r, err := http.NewRequest("GET", idTagsBaseUrl+"/"+"test", nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -223,7 +218,7 @@ func TestGetIdTagFull(t *testing.T) {
 	assert.Equal(t, "testGroup", idTag.GroupIdTag)
 
 	// Delete it
-	r, err = http.NewRequest("DELETE", baseUrl+"/test", nil)
+	r, err = http.NewRequest("DELETE", idTagsBaseUrl+"/"+"test", nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -232,7 +227,7 @@ func TestGetIdTagFull(t *testing.T) {
 
 // Test fetching IdTag that does not exist
 func TestGetIdTagMissing(t *testing.T) {
-	r, err := http.NewRequest("GET", baseUrl+"/test", nil)
+	r, err := http.NewRequest("GET", idTagsBaseUrl+"/"+"test", nil)
 	assert.Nil(t, err)
 	res, err := http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -246,7 +241,7 @@ func TestDeleteIdTagSimple(t *testing.T) {
 	assert.Equal(t, 201, res.StatusCode)
 
 	// Delete it
-	r, err := http.NewRequest("DELETE", baseUrl+"/test", nil)
+	r, err := http.NewRequest("DELETE", idTagsBaseUrl+"/"+"test", nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -256,7 +251,7 @@ func TestDeleteIdTagSimple(t *testing.T) {
 // Test deletion of IdTag that does not exist
 func TestDeleteIdTagNotExist(t *testing.T) {
 	// Delete it again
-	r, err := http.NewRequest("DELETE", baseUrl+"/test", nil)
+	r, err := http.NewRequest("DELETE", idTagsBaseUrl+"/"+"test", nil)
 	assert.Nil(t, err)
 	res, err := http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -278,7 +273,7 @@ func TestUpdateIdTag(t *testing.T) {
 	assert.Equal(t, 201, res.StatusCode)
 
 	// Fetch it and match the data
-	r, err := http.NewRequest("GET", baseUrl+"/test", nil)
+	r, err := http.NewRequest("GET", idTagsBaseUrl+"/"+"test", nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -305,14 +300,14 @@ func TestUpdateIdTag(t *testing.T) {
     }`
 	reader = strings.NewReader(body)
 
-	r, err = http.NewRequest("PUT", baseUrl+"/test", reader)
+	r, err = http.NewRequest("PUT", idTagsBaseUrl+"/"+"test", reader)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
 	assert.Equal(t, 200, res.StatusCode)
 
 	// Fetch it and match the data
-	r, err = http.NewRequest("GET", baseUrl+"/test", nil)
+	r, err = http.NewRequest("GET", idTagsBaseUrl+"/"+"test", nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -329,7 +324,7 @@ func TestUpdateIdTag(t *testing.T) {
 	assert.Equal(t, "testGroup2", idTag.GroupIdTag)
 
 	// Delete it again
-	r, err = http.NewRequest("DELETE", baseUrl+"/test", nil)
+	r, err = http.NewRequest("DELETE", idTagsBaseUrl+"/"+"test", nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -339,7 +334,7 @@ func TestUpdateIdTag(t *testing.T) {
 // Test update of IdTag that does not exist
 func TestUpdateIdTagNotExist(t *testing.T) {
 	// Delete it again
-	r, err := http.NewRequest("PUT", baseUrl+"/test", nil)
+	r, err := http.NewRequest("PUT", idTagsBaseUrl+"/"+"test", nil)
 	assert.Nil(t, err)
 	res, err := http.DefaultClient.Do(r)
 	assert.Nil(t, err)

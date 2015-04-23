@@ -1,13 +1,13 @@
 package models
 
 import (
-	"github.com/sebdah/recharged/central-system/database"
+	"github.com/sebdah/recharged/admin/database"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
 type ChargePoint struct {
-	Id           bson.ObjectId `json:"-" bson:"_id,omitempty"`
+	Id           bson.ObjectId `json:"id" bson:"_id,omitempty"`
 	Model        string        `json:"model" type:"string" required:"true"`
 	Vendor       string        `json:"vendor" type:"string" required:"true"`
 	SerialNumber string        `json:"serialNumber" type:"string" required:"false"`
@@ -27,10 +27,7 @@ func (this *ChargePoint) Collection() *mgo.Collection {
 
 // Indexes, satisfies the Modeller interface
 func (this *ChargePoint) Indexes() (indexes []*mgo.Index) {
-	index := mgo.Index{
-		Key:    []string{"imsi", "serialNumber"},
-		Unique: true,
-	}
+	index := mgo.Index{}
 
 	indexes = append(indexes, &index)
 

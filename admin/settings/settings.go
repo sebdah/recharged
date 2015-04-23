@@ -26,7 +26,7 @@ func GetDevSettings() (settings Settings) {
 	adminServiceUrl, _ := url.Parse("http://localhost:6000")
 
 	settings.AdminServiceUrl = adminServiceUrl
-	settings.DatabaseName = "rechargedDevCs"
+	settings.DatabaseName = "rechargedDevAdmin"
 	settings.MongoDBHosts = "localhost:27017"
 
 	return
