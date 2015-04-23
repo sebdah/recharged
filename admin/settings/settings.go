@@ -9,6 +9,7 @@ type Settings struct {
 	AdminServiceUrl *url.URL
 	DatabaseName    string
 	MongoDBHosts    string
+	Port            int
 }
 
 func GetSettings() Settings {
@@ -28,6 +29,7 @@ func GetDevSettings() (settings Settings) {
 	settings.AdminServiceUrl = adminServiceUrl
 	settings.DatabaseName = "rechargedDevAdmin"
 	settings.MongoDBHosts = "localhost:27017"
+	settings.Port = 6000
 
 	return
 }

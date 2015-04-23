@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -8,6 +9,7 @@ import (
 	"github.com/sebdah/recharged/admin/database"
 	"github.com/sebdah/recharged/admin/models"
 	"github.com/sebdah/recharged/admin/routers"
+	"github.com/sebdah/recharged/admin/settings"
 )
 
 func main() {
@@ -18,11 +20,7 @@ func main() {
 	}
 	log.Printf("Using environment '%s'\n", env)
 
-	// Set default port
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "6000"
-	}
+	conf := settings.GetSettings()
 
 	// Create databases if needed
 	if env == "dev" {
@@ -35,6 +33,6 @@ func main() {
 		models.EnsureIndexes(new(models.ChargePoint))
 	}
 
-	log.Printf("Starting webserver on port %s\n", port)
-	http.ListenAndServe(":"+port, routers.Router())
+	log.Printf("Starting webserver on port %d\n", conf.Port)
+	http.ListenAndServe(fmt.Sprintf(":%d", conf.Port), routers.Router())
 }
