@@ -3,7 +3,6 @@ package handlers_test
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -14,16 +13,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var (
-	server  *httptest.Server
-	baseUrl string
-	reader  io.Reader
-)
+var chargePointsBaseUrl string
 
 // Initializer
 func init() {
 	server = httptest.NewServer(routers.Router())
-	baseUrl = fmt.Sprintf("%s/admin/chargePoints", server.URL)
+	chargePointsBaseUrl = fmt.Sprintf("%s/chargepoints", server.URL)
 
 	// Prepare the database
 	chargePoint := models.NewChargePoint()
@@ -34,7 +29,8 @@ func init() {
 // Helper create ChargePoint
 func createChargePoint(t *testing.T, body string) (res *http.Response, chargePoint *models.ChargePoint) {
 	reader := strings.NewReader(body)
-	r, err := http.NewRequest("POST", baseUrl, reader)
+	fmt.Println(chargePointsBaseUrl)
+	r, err := http.NewRequest("POST", chargePointsBaseUrl, reader)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -49,7 +45,7 @@ func createChargePoint(t *testing.T, body string) (res *http.Response, chargePoi
 
 // Helper - Delete ChargePoint
 func deleteChargePoint(t *testing.T, id string) (res *http.Response) {
-	r, err := http.NewRequest("DELETE", baseUrl+"/"+id, nil)
+	r, err := http.NewRequest("DELETE", chargePointsBaseUrl+"/"+id, nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -67,7 +63,7 @@ func TestListChargePointSimple(t *testing.T) {
 	assert.Equal(t, 201, res.StatusCode)
 
 	// List all ChargePoints
-	r, err := http.NewRequest("GET", baseUrl, reader)
+	r, err := http.NewRequest("GET", chargePointsBaseUrl, reader)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -112,7 +108,7 @@ func TestCreateChargePointFull(t *testing.T) {
 	assert.Equal(t, 201, res.StatusCode)
 
 	// Fetch it and match the data
-	r, err := http.NewRequest("GET", baseUrl+"/"+chargePoint1.Id.Hex(), nil)
+	r, err := http.NewRequest("GET", chargePointsBaseUrl+"/"+chargePoint1.Id.Hex(), nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -160,7 +156,7 @@ func TestGetChargePointFull(t *testing.T) {
 	assert.Equal(t, 201, res.StatusCode)
 
 	// Fetch it and match the data
-	r, err := http.NewRequest("GET", baseUrl+"/"+chargePoint1.Id.Hex(), nil)
+	r, err := http.NewRequest("GET", chargePointsBaseUrl+"/"+chargePoint1.Id.Hex(), nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -182,7 +178,7 @@ func TestGetChargePointFull(t *testing.T) {
 
 // Test fetching ChargePoint that does not exist
 func TestGetChargePointMissing(t *testing.T) {
-	r, err := http.NewRequest("GET", baseUrl+"/12345", nil)
+	r, err := http.NewRequest("GET", chargePointsBaseUrl+"/"+"12345", nil)
 	assert.Nil(t, err)
 	res, err := http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -220,7 +216,7 @@ func TestUpdateChargePoint(t *testing.T) {
 	assert.Equal(t, 201, res.StatusCode)
 
 	// Fetch it and match the data
-	r, err := http.NewRequest("GET", baseUrl+"/"+chargePoint1.Id.Hex(), nil)
+	r, err := http.NewRequest("GET", chargePointsBaseUrl+"/"+chargePoint1.Id.Hex(), nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -245,14 +241,14 @@ func TestUpdateChargePoint(t *testing.T) {
 		}`
 	reader = strings.NewReader(body)
 
-	r, err = http.NewRequest("PUT", baseUrl+"/"+chargePoint1.Id.Hex(), reader)
+	r, err = http.NewRequest("PUT", chargePointsBaseUrl+"/"+chargePoint1.Id.Hex(), reader)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
 	assert.Equal(t, 200, res.StatusCode)
 
 	// Fetch it and match the data
-	r, err = http.NewRequest("GET", baseUrl+"/"+chargePoint1.Id.Hex(), nil)
+	r, err = http.NewRequest("GET", chargePointsBaseUrl+"/"+chargePoint1.Id.Hex(), nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -268,7 +264,7 @@ func TestUpdateChargePoint(t *testing.T) {
 	assert.Equal(t, "imsi2", chargePoint3.Imsi)
 
 	// Delete it again
-	r, err = http.NewRequest("DELETE", baseUrl+"/"+chargePoint1.Id.Hex(), nil)
+	r, err = http.NewRequest("DELETE", chargePointsBaseUrl+"/"+chargePoint1.Id.Hex(), nil)
 	assert.Nil(t, err)
 	res, err = http.DefaultClient.Do(r)
 	assert.Nil(t, err)
@@ -278,7 +274,7 @@ func TestUpdateChargePoint(t *testing.T) {
 // Test update of ChargePoint that does not exist
 func TestUpdateChargePointNotExist(t *testing.T) {
 	// Delete it again
-	r, err := http.NewRequest("PUT", baseUrl+"/test", nil)
+	r, err := http.NewRequest("PUT", chargePointsBaseUrl+"/"+"test", nil)
 	assert.Nil(t, err)
 	res, err := http.DefaultClient.Do(r)
 	assert.Nil(t, err)

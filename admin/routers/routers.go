@@ -8,46 +8,47 @@ import (
 func Router() *mux.Router {
 	router := mux.NewRouter()
 
-	// Manager
-	adminRouter := router.PathPrefix("/admin").Subrouter()
-	adminRouter.
-		Path("/idTags").
+	// IdTags
+	router.
+		Path("/idtags").
 		Methods("GET").
 		HandlerFunc(handlers.IdTagListHandler)
-	adminRouter.
-		Path("/idTags").
+	router.
+		Path("/idtags").
 		Methods("POST").
 		HandlerFunc(handlers.IdTagCreateHandler)
-	adminRouter.
-		Path("/idTags/{id}").
+	router.
+		Path("/idtags/{id}").
 		Methods("GET").
 		HandlerFunc(handlers.IdTagGetHandler)
-	adminRouter.
-		Path("/idTags/{id}").
+	router.
+		Path("/idtags/{id}").
 		Methods("DELETE").
 		HandlerFunc(handlers.IdTagDeleteHandler)
-	adminRouter.
-		Path("/idTags/{id}").
+	router.
+		Path("/idtags/{id}").
 		Methods("PUT").
 		HandlerFunc(handlers.IdTagUpdateHandler)
-	adminRouter.
-		Path("/chargePoints").
+
+	// Routing for charge points
+	router.
+		Path("/chargepoints").
 		Methods("GET").
 		HandlerFunc(handlers.ChargePointListHandler)
-	adminRouter.
-		Path("/chargePoints").
+	router.
+		Path("/chargepoints").
 		Methods("POST").
 		HandlerFunc(handlers.ChargePointCreateHandler)
-	adminRouter.
-		Path("/chargePoints/{id}").
+	router.
+		Path("/chargepoints/{id}").
 		Methods("GET").
 		HandlerFunc(handlers.ChargePointGetHandler)
-	adminRouter.
-		Path("/chargePoints/{id}").
+	router.
+		Path("/chargepoints/{id}").
 		Methods("DELETE").
 		HandlerFunc(handlers.ChargePointDeleteHandler)
-	adminRouter.
-		Path("/chargePoints/{id}").
+	router.
+		Path("/chargepoints/{id}").
 		Methods("PUT").
 		HandlerFunc(handlers.ChargePointUpdateHandler)
 
