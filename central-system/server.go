@@ -27,12 +27,10 @@ func main() {
 	// Create databases if needed
 	if env == "dev" {
 		log.Println("Ensuring databases")
-		database.CreateCollectionIdTags()
-		database.CreateCollectionChargePoints()
+		database.CreateCollectionBootNotificationLog()
 
 		log.Println("Ensuring indexes")
-		models.EnsureIndexes(new(models.IdTag))
-		models.EnsureIndexes(new(models.ChargePoint))
+		models.EnsureIndexes(new(models.BootNotificationLog))
 	}
 
 	log.Printf("Starting webserver on port %s\n", port)
