@@ -1,10 +1,14 @@
 package rpc
 
-import "regexp"
+import (
+	"fmt"
+	"regexp"
+)
 
 var callRegExp = regexp.MustCompile(`^\[(?P<messageId>\d+),(\ ?)"(?P<uniqueId>.+)",(\ ?)"(?P<action>\w+)",(\ ?)(?P<payload>.*)\]$`)
 
 type Call struct {
+	callCode int    `type:"int" required:"true"`
 	UniqueId string `type:"string" required:"true"`
 	Action   string `type:"string" required:"true"`
 	Payload  string `type:"string" required:"true"`
@@ -13,6 +17,7 @@ type Call struct {
 // Constructor
 func NewCall() (call *Call) {
 	call = new(Call)
+	call.callCode = 2
 	call.UniqueId = ""
 	call.Action = ""
 	call.Payload = "{}"
@@ -44,4 +49,14 @@ func (this *Call) Populate(msg string) (callError *CallError) {
 	}
 
 	return
+}
+
+// Get the string representation
+func (this *Call) String() string {
+	return fmt.Sprintf(
+		`[%d, "%s", "%s", %s]`,
+		this.callCode,
+		this.UniqueId,
+		this.Action,
+		this.Payload)
 }

@@ -43,3 +43,11 @@ func TestCallPopulateInvalidCall(t *testing.T) {
 	assert.Equal(t, "Any other error not covered by the previous ones", callError.ErrorDescription)
 	assert.Equal(t, "{\"message\": \"Malformatted message\"}", callError.ErrorDetails)
 }
+
+// Test string representation
+func TestCallString(t *testing.T) {
+	call := NewCall()
+	callError := call.Populate(`[2, "1234", "Authorize", {}]`)
+	assert.Nil(t, callError)
+	assert.Equal(t, `[2, "1234", "Authorize", {}]`, call.String())
+}
