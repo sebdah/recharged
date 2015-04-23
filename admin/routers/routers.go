@@ -51,6 +51,10 @@ func Router() *mux.Router {
 		Path("/chargepoints/{id}").
 		Methods("PUT").
 		HandlerFunc(handlers.ChargePointUpdateHandler)
+	router.
+		Path("/chargepoints/validate/{model}/{vendor}").
+		Methods("GET").
+		HandlerFunc(handlers.ChargePointValidationHandler)
 
 	return router
 }

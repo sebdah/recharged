@@ -170,3 +170,27 @@ func ChargePointUpdateHandler(w http.ResponseWriter, r *http.Request) {
 
 	return
 }
+
+// Validate if a model/vendor combination exists
+// Returns 200 if found, else 404
+func ChargePointValidationHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	model := vars["model"]
+	vendor := vars["vendor"]
+	collection := database.GetCollectionChargePoints()
+
+	cnt, err := collection.Find(bson.M{"model": model, "vendor": vendor}).Count()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("Error querying MongoDB: %s\n", err.Error())
+		return
+	}
+
+	if cnt >= 1 {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	w.WriteHeader(http.StatusNotFound)
+	return
+}

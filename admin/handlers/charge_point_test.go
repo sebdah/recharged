@@ -280,3 +280,36 @@ func TestUpdateChargePointNotExist(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 404, res.StatusCode)
 }
+
+// Test validation of model/vendor combination
+func TestChargePointValidationOK(t *testing.T) {
+	// Create the chargePoint
+	body := `
+		{
+			"model": "model1",
+			"vendor": "vendor1"
+		}`
+	res, chargePoint := createChargePoint(t, body)
+	assert.Equal(t, 201, res.StatusCode)
+
+	// See if it exists
+	r, err := http.NewRequest("GET", chargePointsBaseUrl+"/validate/model1/vendor1", nil)
+	assert.Nil(t, err)
+	res, err = http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, res.StatusCode)
+
+	// Delete it
+	res = deleteChargePoint(t, chargePoint.Id.Hex())
+	assert.Equal(t, 200, res.StatusCode)
+}
+
+// Test validation of model/vendor combination
+func TestChargePointValidationFail(t *testing.T) {
+	// See if it exists
+	r, err := http.NewRequest("GET", chargePointsBaseUrl+"/validate/model1/vendor1", nil)
+	assert.Nil(t, err)
+	res, err := http.DefaultClient.Do(r)
+	assert.Nil(t, err)
+	assert.Equal(t, 404, res.StatusCode)
+}
