@@ -5,12 +5,12 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/sebdah/recharged/shared/handlers"
-	"github.com/sebdah/recharged/shared/processor"
+	"github.com/sebdah/recharged/shared/processors"
 	"github.com/sebdah/recharged/shared/rpc"
 )
 
 // Message loop
-func WsStreamReader(conn *websocket.Conn, proc *processor.Processor) {
+func WsStreamReader(conn *websocket.Conn, reqProcessor *processors.ReqProcessor) {
 	messageTypeRegExp := regexp.MustCompile(`^\[(?P<messageId>\d+),(.*)\]$`)
 
 	for {
@@ -39,7 +39,7 @@ func WsStreamReader(conn *websocket.Conn, proc *processor.Processor) {
 
 		// Handle CALL requests
 		if result["messageId"] == "2" {
-			call, callError := handlers.CallHandler(string(msg), *proc)
+			call, callError := handlers.CallHandler(string(msg), *reqProcessor)
 
 			// Send the response
 			var msg string

@@ -5,12 +5,12 @@ import (
 	"log"
 
 	"github.com/sebdah/recharged/shared/messages"
-	"github.com/sebdah/recharged/shared/processor"
+	"github.com/sebdah/recharged/shared/processors"
 	"github.com/sebdah/recharged/shared/rpc"
 )
 
 // Handle CALL requests
-func CallHandler(msg string, proc processor.Processor) (callResult *rpc.CallResult, callError *rpc.CallError) {
+func CallHandler(msg string, reqProcessor processors.ReqProcessor) (callResult *rpc.CallResult, callError *rpc.CallError) {
 	var err error
 
 	// Populate and validate the fields
@@ -29,7 +29,7 @@ func CallHandler(msg string, proc processor.Processor) (callResult *rpc.CallResu
 			callError = rpc.NewCallError(call.UniqueId, rpc.NewFormationViolation())
 			return
 		}
-		conf, err := proc.ProcessAuthorizeReq(req)
+		conf, err := reqProcessor.ProcessAuthorizeReq(req)
 		if err != nil {
 			log.Println("Error processing request: %s", err.Error())
 			genericError := rpc.NewGenericError()
@@ -50,7 +50,7 @@ func CallHandler(msg string, proc processor.Processor) (callResult *rpc.CallResu
 			callError = rpc.NewCallError(call.UniqueId, rpc.NewFormationViolation())
 			return
 		}
-		conf, err := proc.ProcessBootNotificationReq(req)
+		conf, err := reqProcessor.ProcessBootNotificationReq(req)
 		if err != nil {
 			log.Println("Error processing request: %s", err.Error())
 			genericError := rpc.NewGenericError()
@@ -71,7 +71,7 @@ func CallHandler(msg string, proc processor.Processor) (callResult *rpc.CallResu
 			callError = rpc.NewCallError(call.UniqueId, rpc.NewFormationViolation())
 			return
 		}
-		conf, err := proc.ProcessDataTransferReq(req)
+		conf, err := reqProcessor.ProcessDataTransferReq(req)
 		if err != nil {
 			log.Println("Error processing request: %s", err.Error())
 			genericError := rpc.NewGenericError()

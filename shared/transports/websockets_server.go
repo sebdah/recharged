@@ -5,12 +5,12 @@ import (
 	"net/http"
 
 	"github.com/gorilla/websocket"
-	"github.com/sebdah/recharged/shared/processor"
+	"github.com/sebdah/recharged/shared/processors"
 )
 
 type WsServer struct {
-	Upgrader  websocket.Upgrader
-	Processor processor.Processor
+	Upgrader     websocket.Upgrader
+	ReqProcessor processors.ReqProcessor
 }
 
 func NewWsServer() (server *WsServer) {
@@ -32,15 +32,15 @@ func (this *WsServer) Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	go WsStreamReader(conn, this.GetProcessor())
+	go WsStreamReader(conn, this.GetReqProcessor())
 }
 
 // Get processor function
-func (this *WsServer) GetProcessor() *processor.Processor {
-	return &this.Processor
+func (this *WsServer) GetReqProcessor() *processors.ReqProcessor {
+	return &this.ReqProcessor
 }
 
 // Set processor function
-func (this *WsServer) SetProcessor(proc processor.Processor) {
-	this.Processor = proc
+func (this *WsServer) SetReqProcessor(proc processors.ReqProcessor) {
+	this.ReqProcessor = proc
 }

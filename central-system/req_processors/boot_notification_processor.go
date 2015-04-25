@@ -1,4 +1,4 @@
-package message_processors
+package req_processors
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 )
 
 // Process the request
-func (this *MessageProcessor) ProcessBootNotificationReq(msg *messages.BootNotificationReq) (conf *messages.BootNotificationConf, errorer rpc.Errorer) {
+func (this *ReqProcessor) ProcessBootNotificationReq(msg *messages.BootNotificationReq) (conf *messages.BootNotificationConf, errorer rpc.Errorer) {
 	var err error
 
 	// Build the ChargePoint
