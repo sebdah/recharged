@@ -5,14 +5,14 @@ import (
 	"log"
 	"strings"
 
-	"github.com/sebdah/recharged/central-system/rpc"
-	"github.com/sebdah/recharged/central-system/types"
+	"github.com/sebdah/recharged/shared/rpc"
 )
 
 type DataTransferReq struct {
-	VendorId  string `json:"vendorId" type:"string" required:"true"`
-	MessageId string `json:"messageId" type:"string" required:"false"`
-	Data      string `json:"data" type:"string" required:"false"`
+	messageType string `json:"-" type:"string"`
+	VendorId    string `json:"vendorId" type:"string" required:"true"`
+	MessageId   string `json:"messageId" type:"string" required:"false"`
+	Data        string `json:"data" type:"string" required:"false"`
 }
 
 type DataTransferConf struct {
@@ -22,6 +22,7 @@ type DataTransferConf struct {
 
 func NewDataTransferReq() (req *DataTransferReq) {
 	req = new(DataTransferReq)
+	req.messageType = "DataTransfer"
 	return
 }
 
@@ -30,12 +31,9 @@ func NewDataTransferConf() (conf *DataTransferConf) {
 	return
 }
 
-// Process
-func (this *DataTransferReq) Process() (conf *DataTransferConf, errorer rpc.Errorer) {
-	// Populate the response configuration
-	conf = NewDataTransferConf()
-	conf.Status = types.DataTransferStatusUnknownVendorId
-	return
+// Get the message type
+func (this *DataTransferReq) GetMessageType() string {
+	return this.messageType
 }
 
 // Populate the object with JSON data
