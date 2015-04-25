@@ -29,7 +29,7 @@ func CallHandler(msg string, proc processor.Processor) (callResult *rpc.CallResu
 			callError = rpc.NewCallError(call.UniqueId, rpc.NewFormationViolation())
 			return
 		}
-		conf, err := proc.ProcessAuthorize(req)
+		conf, err := proc.ProcessAuthorizeReq(req)
 		if err != nil {
 			log.Println("Error processing request: %s", err.Error())
 			genericError := rpc.NewGenericError()
@@ -50,7 +50,7 @@ func CallHandler(msg string, proc processor.Processor) (callResult *rpc.CallResu
 			callError = rpc.NewCallError(call.UniqueId, rpc.NewFormationViolation())
 			return
 		}
-		conf, err := proc.ProcessBootNotification(req)
+		conf, err := proc.ProcessBootNotificationReq(req)
 		if err != nil {
 			log.Println("Error processing request: %s", err.Error())
 			genericError := rpc.NewGenericError()
@@ -71,7 +71,7 @@ func CallHandler(msg string, proc processor.Processor) (callResult *rpc.CallResu
 			callError = rpc.NewCallError(call.UniqueId, rpc.NewFormationViolation())
 			return
 		}
-		conf, err := proc.ProcessDataTransfer(req)
+		conf, err := proc.ProcessDataTransferReq(req)
 		if err != nil {
 			log.Println("Error processing request: %s", err.Error())
 			genericError := rpc.NewGenericError()

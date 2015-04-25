@@ -12,7 +12,7 @@ import (
 )
 
 // Process the request
-func (this *MessageProcessor) ProcessBootNotification(msg *messages.BootNotificationReq) (conf *messages.BootNotificationConf, errorer rpc.Errorer) {
+func (this *MessageProcessor) ProcessBootNotificationReq(msg *messages.BootNotificationReq) (conf *messages.BootNotificationConf, errorer rpc.Errorer) {
 	var err error
 
 	// Build the ChargePoint

@@ -11,7 +11,7 @@ import (
 )
 
 // Process the request, when it has been populated
-func (this *MessageProcessor) ProcessAuthorize(msg *messages.AuthorizeReq) (conf *messages.AuthorizeConf, errorer rpc.Errorer) {
+func (this *MessageProcessor) ProcessAuthorizeReq(msg *messages.AuthorizeReq) (conf *messages.AuthorizeConf, errorer rpc.Errorer) {
 	// Get the IdTag
 	idTag := types.NewIdTag()
 	res, err := http.Get(configuration.AdminServiceUrl.String() + "/idtags/" + msg.IdTag.Id)

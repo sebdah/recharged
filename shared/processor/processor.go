@@ -6,7 +6,7 @@ import (
 )
 
 type Processor interface {
-	ProcessAuthorize(msg *messages.AuthorizeReq) (conf *messages.AuthorizeConf, errorer rpc.Errorer)
-	ProcessBootNotification(msg *messages.BootNotificationReq) (conf *messages.BootNotificationConf, errorer rpc.Errorer)
-	ProcessDataTransfer(msg *messages.DataTransferReq) (conf *messages.DataTransferConf, errorer rpc.Errorer)
+	ProcessAuthorizeReq(msg *messages.AuthorizeReq) (conf *messages.AuthorizeConf, errorer rpc.Errorer)
+	ProcessBootNotificationReq(msg *messages.BootNotificationReq) (conf *messages.BootNotificationConf, errorer rpc.Errorer)
+	ProcessDataTransferReq(msg *messages.DataTransferReq) (conf *messages.DataTransferConf, errorer rpc.Errorer)
 }
