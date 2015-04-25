@@ -1,11 +1,8 @@
 package rpc
 
-import (
-	"fmt"
-	"regexp"
-)
+import "fmt"
 
-var callResultRegExp = regexp.MustCompile(`^\[(?P<messageId>\d+),(\ ?)"(?P<uniqueId>.+)",(\ ?)(?P<payload>.*)\]$`)
+// var callResultRegExp = regexp.MustCompile(`^\[(?P<messageId>\d+),(\ ?)"(?P<uniqueId>.+)",(\ ?)(?P<payload>.*)\]$`)
 
 type CallResult struct {
 	UniqueId string `type:"string" required:"true"`
