@@ -1,8 +1,4 @@
-package req_processors
-
-import "github.com/sebdah/recharged/admin/settings"
-
-var configuration = settings.GetSettings()
+package processors
 
 type ReqProcessor struct{}
 

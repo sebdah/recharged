@@ -6,11 +6,10 @@ import (
 )
 
 type Settings struct {
-	AdminServiceUrl   *url.URL `URL to the admin service`
-	DatabaseName      string   `MongoDB database`
-	HeartbeatInterval int64    `How often to send heartbeats (in seconds)`
-	MongoDBHosts      string   `MongoDB host:port combinations`
-	Port              int64    `Service port number`
+	AdminServiceUrl *url.URL `URL to the admin service`
+	DatabaseName    string   `MongoDB database`
+	MongoDBHosts    string   `MongoDB host:port combinations`
+	Port            int64    `Service port number`
 }
 
 func GetSettings() Settings {
@@ -29,7 +28,6 @@ func GetDevSettings() (settings Settings) {
 
 	settings.AdminServiceUrl = adminServiceUrl
 	settings.DatabaseName = "rechargedDevCs"
-	settings.HeartbeatInterval = 10
 	settings.MongoDBHosts = "localhost:27017"
 	settings.Port = 5000
 

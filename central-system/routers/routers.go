@@ -2,17 +2,23 @@ package routers
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/sebdah/recharged/central-system/req_processors"
+	"github.com/sebdah/recharged/central-system/processors"
 	"github.com/sebdah/recharged/shared/transports"
 )
 
 func Router() *mux.Router {
 	router := mux.NewRouter()
 
-	// OCPP2.0-J
+	// Create websockets server
 	wsServer := transports.NewWsServer()
-	reqProcessor := req_processors.NewReqProcessor()
+
+	// Configure request processors
+	reqProcessor := processors.NewReqProcessor()
+	confProcessor := processors.NewConfProcessor()
 	wsServer.SetReqProcessor(reqProcessor)
+	wsServer.SetConfProcessor(confProcessor)
+
+	// OCPP2.0-J
 	router.Path("/ocpp/v2.0j/ws").HandlerFunc(wsServer.Handler)
 
 	return router

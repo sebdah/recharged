@@ -1,4 +1,4 @@
-package req_processors
+package processors
 
 import (
 	"fmt"
