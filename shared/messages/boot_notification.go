@@ -32,7 +32,7 @@ func NewBootNotificationReq() (req *BootNotificationReq) {
 func NewBootNotificationConf(status string) (conf *BootNotificationConf) {
 	conf = new(BootNotificationConf)
 	conf.CurrentTime.Time = time.Now()
-	conf.HeartbeatInterval = configuration.HeartbeatInterval
+	conf.HeartbeatInterval = 10
 	conf.Status = status
 	return
 }

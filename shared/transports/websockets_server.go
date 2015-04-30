@@ -9,8 +9,9 @@ import (
 )
 
 type WsServer struct {
-	Upgrader     websocket.Upgrader
-	ReqProcessor processors.ReqProcessor
+	Upgrader      websocket.Upgrader
+	ConfProcessor processors.ConfProcessor
+	ReqProcessor  processors.ReqProcessor
 }
 
 func NewWsServer() (server *WsServer) {
@@ -32,15 +33,25 @@ func (this *WsServer) Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	go WsStreamReader(conn, this.GetReqProcessor())
+	go WsStreamReader(conn, this.GetReqProcessor(), this.GetConfProcessor())
 }
 
-// Get processor function
+// Get conf processor function
+func (this *WsServer) GetConfProcessor() *processors.ConfProcessor {
+	return &this.ConfProcessor
+}
+
+// Get req processor function
 func (this *WsServer) GetReqProcessor() *processors.ReqProcessor {
 	return &this.ReqProcessor
 }
 
-// Set processor function
+// Set conf processor function
+func (this *WsServer) SetConfProcessor(proc processors.ConfProcessor) {
+	this.ConfProcessor = proc
+}
+
+// Set req processor function
 func (this *WsServer) SetReqProcessor(proc processors.ReqProcessor) {
 	this.ReqProcessor = proc
 }

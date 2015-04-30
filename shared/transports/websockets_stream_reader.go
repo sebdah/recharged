@@ -10,7 +10,7 @@ import (
 )
 
 // Message loop
-func WsStreamReader(conn *websocket.Conn, reqProcessor *processors.ReqProcessor) {
+func WsStreamReader(conn *websocket.Conn, reqProcessor *processors.ReqProcessor, confProcessor *processors.ConfProcessor) {
 	messageTypeRegExp := regexp.MustCompile(`^\[(?P<messageId>\d+),(.*)\]$`)
 
 	for {
@@ -52,6 +52,11 @@ func WsStreamReader(conn *websocket.Conn, reqProcessor *processors.ReqProcessor)
 			if err != nil {
 				return
 			}
+		}
+
+		// Handle CALLRESULT requests
+		if result["messageId"] == "3" {
+			handlers.CallResultHandler(string(msg), *confProcessor)
 		}
 	}
 }

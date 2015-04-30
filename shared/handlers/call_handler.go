@@ -25,13 +25,13 @@ func CallHandler(msg string, reqProcessor processors.ReqProcessor) (callResult *
 		req := messages.NewAuthorizeReq()
 		err = req.ParseJson(call.Payload)
 		if err != nil {
-			log.Println("Error parsing JSON: %s", err.Error())
+			log.Printf("Error parsing JSON: %s\n", err.Error())
 			callError = rpc.NewCallError(call.UniqueId, rpc.NewFormationViolation())
 			return
 		}
 		conf, err := reqProcessor.ProcessAuthorizeReq(req)
 		if err != nil {
-			log.Println("Error processing request: %s", err.Error())
+			log.Printf("Error processing request: %s\n", err.Error())
 			genericError := rpc.NewGenericError()
 			genericError.SetDetails(fmt.Sprintf(`{"message": "%s"}`, err.Error()))
 			callError = rpc.NewCallError(call.UniqueId, genericError)
@@ -46,13 +46,13 @@ func CallHandler(msg string, reqProcessor processors.ReqProcessor) (callResult *
 		req := messages.NewBootNotificationReq()
 		err = req.ParseJson(call.Payload)
 		if err != nil {
-			log.Println("Error parsing JSON: %s", err.Error())
+			log.Printf("Error parsing JSON: %s\n", err.Error())
 			callError = rpc.NewCallError(call.UniqueId, rpc.NewFormationViolation())
 			return
 		}
 		conf, err := reqProcessor.ProcessBootNotificationReq(req)
 		if err != nil {
-			log.Println("Error processing request: %s", err.Error())
+			log.Printf("Error processing request: %s\n", err.Error())
 			genericError := rpc.NewGenericError()
 			genericError.SetDetails(fmt.Sprintf(`{"message": "%s"}`, err.Error()))
 			callError = rpc.NewCallError(call.UniqueId, genericError)
@@ -67,13 +67,13 @@ func CallHandler(msg string, reqProcessor processors.ReqProcessor) (callResult *
 		req := messages.NewDataTransferReq()
 		err = req.ParseJson(call.Payload)
 		if err != nil {
-			log.Println("Error parsing JSON: %s", err.Error())
+			log.Printf("Error parsing JSON: %s\n", err.Error())
 			callError = rpc.NewCallError(call.UniqueId, rpc.NewFormationViolation())
 			return
 		}
 		conf, err := reqProcessor.ProcessDataTransferReq(req)
 		if err != nil {
-			log.Println("Error processing request: %s", err.Error())
+			log.Printf("Error processing request: %s\n", err.Error())
 			genericError := rpc.NewGenericError()
 			genericError.SetDetails(fmt.Sprintf(`{"message": "%s"}`, err.Error()))
 			callError = rpc.NewCallError(call.UniqueId, genericError)
