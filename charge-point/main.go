@@ -22,7 +22,7 @@ func main() {
 
 	// Start the dummy sender
 	go func() {
-		WsClient.WriteMessage <- "ping"
+		WsClient.WriteMessage <- "[1, fds1, fdsff]"
 	}()
 
 	var input string

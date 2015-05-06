@@ -9,6 +9,7 @@ import (
 	"github.com/sebdah/recharged/central-system/database"
 	"github.com/sebdah/recharged/central-system/models"
 	"github.com/sebdah/recharged/central-system/settings"
+	"github.com/sebdah/recharged/shared/rpc"
 	"github.com/sebdah/recharged/shared/websockets"
 )
 
@@ -61,5 +62,13 @@ func messageParser() {
 		recv_msg = <-WsServer.ReadMessage
 
 		log.Printf("RECV: %s\n", recv_msg)
+
+		messageType, err := rpc.MessageParser(recv_msg)
+		if err != nil {
+			log.Println("Unable to find the message type for the incoming message")
+			continue
+		}
+
+		log.Printf("MessageType: %d", messageType)
 	}
 }
