@@ -1,0 +1,4 @@
+port: 6000
+mongodb:
+    db: recharged-admin-dev
+    hosts: localhost:27017
