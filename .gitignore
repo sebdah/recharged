@@ -23,6 +23,4 @@ _testmain.go
 *.test
 *.prof
 
-central-system/central-system
-admin/admin
 .idea
