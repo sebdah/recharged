@@ -1,0 +1,7 @@
+port: 6000
+identity: cpId12
+vendorId: 1112
+modelId: 12344
+central-system:
+    endpoint-ocpp20j: "http://localhost:5000/ocpp-2.0j/ws"
+    heartbeat-interval: 10
